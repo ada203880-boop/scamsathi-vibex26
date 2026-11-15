@@ -6,6 +6,7 @@ Verified on November 15, 2026 in the ScamSathi repository.
 - Java 17 compile — passed as part of the API smoke test.
 - API smoke coverage — health route, root page, security headers, no CORS allowance, QR page, local worker MIME, synthetic KYC/URL result, UPI QR result, empty input, and oversized message/QR inputs.
 - Manual browser review — synthetic English and Hindi OTP/urgency messages returned explanations and safe next steps; pasted synthetic UPI QR displayed the payment signal and unverified payee, name, and amount. The UI did not open a URL or initiate payment.
+- GitHub Pages — [deployment run #43722714014](https://github.com/ada203880-boop/scamsathi-vibex26/actions/runs/43722714014) completed successfully from `main`. The public page, style, rules, app, QR page/module, and vendored QR decoder returned HTTP 200. Live message and pasted-UPI QR checks produced the expected explained signals.
 - Presentation — 10 slides; Artifact Tool import, package integrity, slide geometry, and font-policy validation passed with no layout findings or warnings. Slides were rendered and reviewed individually; flow and architecture connector direction was corrected during review.
 - Source hygiene — `git diff --check` passed; focused credential-pattern scan found no matches.
 
@@ -15,6 +16,5 @@ Verified on November 15, 2026 in the ScamSathi repository.
 - QR image decode with an automated image fixture.
 - Accuracy, precision/recall, or any ML/audio metrics.
 - Full mobile/browser matrix, formal screen-reader audit, and native-speaker translation review.
-- GitHub Pages deployment until the Actions run and public URL are verified.
 
 These checks cover expected behavior for the listed synthetic cases; they do not establish real-world fraud-detection accuracy or production security.

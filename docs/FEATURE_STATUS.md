@@ -16,14 +16,13 @@ Status reflects the code in this repository, not the original pasted checklist. 
 | Authentication / database | Not applicable to current local prototype | No accounts or database. Java service binds to `127.0.0.1`; GitHub Pages is a static client-side demo. |
 | Privacy controls | Partially implemented | No content persistence, storage, or logging; session counts are in memory. Language is selectable. No account, history, export, or theme settings. |
 | Responsive and accessible UI | Implemented, manual review limited | Semantic headings, labels, live status/results, keyboard-visible focus, reduced-motion CSS, and responsive breakpoints. Dedicated device/browser accessibility audit remains future work. |
-| Deployable site | Workflow implemented; live state requires successful GitHub Actions run | Pages workflow publishes `web/` on branch updates. Expected URL: `https://ada203880-boop.github.io/scamsathi-vibex26/`. Do not call it live until the workflow and URL are verified. |
-| Tests | Implemented | `npm test` contains nine rule tests and a Java compile/API/static smoke test. No camera hardware, image decoder, broad browser matrix, ML/audio, or real-world efficacy tests. |
+| Deployable site | Live and verified | GitHub Pages publishes the static client at `https://ada203880-boop.github.io/scamsathi-vibex26/`. The live message and pasted UPI QR flows were smoke-checked; the Java service is not deployed there. |
+| Tests | Implemented | `npm test` contains ten rule tests and a Java compile/API/static smoke test. No camera hardware, automated QR image fixture, broad browser matrix, ML/audio, or real-world efficacy tests. |
 | Hackathon deck | Required deck target: 10 slides | Must remain inside the official 8–10 slide limit; do not follow the pasted draft's conflicting 12–14 slide suggestion. |
 
 ## Prioritize next
 
-1. Verify actual GitHub Pages deployment and the public site.
-2. Test camera and image scanning on a permitted HTTPS device/browser with synthetic QR content.
-3. Run mobile and accessibility checks on target devices.
-4. Research datasets, licensing, and evaluation design before any ML implementation.
-5. Add audio detection only with a licensed model, reproducible evaluation, safe upload handling, and clear uncertainty language.
+1. Test camera and image scanning on a permitted HTTPS device/browser with synthetic QR content.
+2. Run mobile and accessibility checks on target devices.
+3. Research datasets, licensing, and evaluation design before any ML implementation.
+4. Add audio detection only with a licensed model, reproducible evaluation, safe upload handling, and clear uncertainty language.

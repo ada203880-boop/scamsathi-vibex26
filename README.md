@@ -6,7 +6,7 @@ ScamSathi is a local-first cyber-safety prototype for Indian communities and sma
 
 **Repository:** https://github.com/ada203880-boop/scamsathi-vibex26
 
-**Public demo (after GitHub Pages deployment):** https://ada203880-boop.github.io/scamsathi-vibex26/
+**Live demo:** https://ada203880-boop.github.io/scamsathi-vibex26/
 
 ## What works
 

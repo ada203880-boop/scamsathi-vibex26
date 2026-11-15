@@ -4,18 +4,18 @@ This roadmap prioritizes the judging guide's working technology, safety, simplic
 
 ## Completed for this branch
 
-- Run the project from the real upstream repository history on `feature/scamsathi-vibex-final`.
+- Publish the completed project to the upstream `main` branch and submission branch.
 - Build local Java API endpoints for message/URL and QR analysis with bounded input sizes.
 - Add explainable rules and a client-side fallback for static hosting.
 - Add browser-side camera/image/paste QR decode integration with lazy local library loading; never auto-open decoded data.
 - Fix scanner results so QR payload analysis is visible on the scanner page.
 - Add responsive UI, three language choices, session-only dashboard, emergency reporting path, honest capability notes, and synthetic examples.
 - Add unit/API smoke tests, GitHub Pages workflow, technical/privacy/security docs, third-party notices, and submission materials.
+- Deploy the static demo on GitHub Pages and verify its message and pasted QR flows on the public site.
 - Prepare a ten-slide deck and demo narration aligned with the official guide.
 
 ## Before a live judging demo
 
-- Confirm GitHub Actions deploys the static site and verify the expected Pages URL.
 - Exercise camera start/deny/retry, pause/resume, rear-camera switch, flashlight, stop, and page-close cleanup on hardware where the user accepts permission.
 - Decode a synthetic QR image on at least two supported browsers; include malformed and unsupported payload cases.
 - Check mobile layout and keyboard-only flow on target devices. Ask a native Hindi and Odia speaker to review translations.
