@@ -200,6 +200,20 @@
     return result;
   }
 
+  function attackChain(signals, text) {
+    const ids = new Set(signals.map(signal => signal.id));
+    const sourceCue = ids.has('brand_mismatch') || ids.has('lookalike') ||
+      /\b(bank|sbi|hdfc|icici|axis|rbi|kyc|police|customs|courier|delivery|support|government|account)\b|बैंक|केवाईसी|पुलिस|ବ୍ୟାଙ୍କ|କେୱାଇସି/iu.test(text);
+    const pressureCue = ids.has('pressure') || ids.has('bait');
+    const extractionCue = ids.has('secret') || ids.has('receive_fee') || ids.has('payment_direction') || ids.has('remote_access');
+    const stages = [
+      { id: 'identity', matched: sourceCue },
+      { id: 'pressure', matched: pressureCue },
+      { id: 'extraction', matched: extractionCue }
+    ];
+    return { count: stages.filter(stage => stage.matched).length, stages };
+  }
+
   function analyze(message, url) {
     const text = String(message || '').trim();
     const link = String(url || '').trim();
@@ -215,7 +229,9 @@
     if (/\b(urgent|verify now|click here|claim now|limited time|winner|lottery|prize money|kyc update|refund pending)\b|अभी क्लिक|इनाम|लॉटरी/iu.test(lower)) add(result, 'bait');
     if (/\b(upi collect|collect request|approve.{0,20}upi|enter.{0,20}upi pin|scan.{0,20}qr.{0,20}receive|qr code.{0,20}receive)\b|collect request|पैसे पाने के लिए.{0,10}qr|upi pin डाल/iu.test(lower)) add(result, 'payment_direction');
     if (link) inspectUrl(result, link);
-    return finalize(result);
+    const final = finalize(result);
+    final.attackChain = attackChain(result.signals, lower);
+    return final;
   }
 
   function analyzeQr(payload) {

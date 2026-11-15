@@ -8,10 +8,14 @@ import java.net.IDN;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,12 +24,25 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
-/** Local Java HTTP service with explainable rules. It never fetches submitted URLs. */
+/** Local Java HTTP service with explainable rules and optional AI agent. */
 public final class ScamSathiServer {
   private static final Path WEB = Paths.get("web").toAbsolutePath().normalize();
   private static final int MAX_MESSAGE = 4_000;
   private static final int MAX_URL = 2_048;
   private static final int MAX_QR = 4_096;
+  private static final int MAX_AGENT_INPUT = 8_000;
+
+  // Gemini API configuration
+  private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=";
+  private static final int GEMINI_TIMEOUT_MS = 5000;
+  private static final int MAX_RETRY_ATTEMPTS = 2;
+
+  // Environment variable for API key
+  private static final String GEMINI_API_KEY = System.getenv("GEMINI_API_KEY");
+
+  // Rate limiting
+  private static long lastRequestTime = 0;
+  private static final long MIN_REQUEST_INTERVAL_MS = 100; // 10 requests per second
 
   private static final class Signal {
     final String id;
@@ -52,16 +69,31 @@ public final class ScamSathiServer {
     final List<String> actions = new ArrayList<>();
   }
 
+  private static final class AgentResult {
+    String agentResponse;
+    String confidence;
+    String explanation;
+    boolean isAvailable = true;
+    String errorMessage = null;
+    long responseTimeMs;
+  }
+
   public static void main(String[] args) throws Exception {
     int port = args.length > 0 ? Integer.parseInt(args[0]) : 18878;
     HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", port), 0);
     server.createContext("/api/health", ScamSathiServer::health);
     server.createContext("/api/analyze", ScamSathiServer::analyzeRequest);
     server.createContext("/api/qr/analyze", ScamSathiServer::qrRequest);
+    // AI Agent endpoints
+    server.createContext("/api/agent/health", ScamSathiServer::agentHealth);
+    server.createContext("/api/agent/chat", ScamSathiServer::agentChat);
+    server.createContext("/api/agent/chatWithContext", ScamSathiServer::agentChatWithContext);
     server.createContext("/", ScamSathiServer::staticFile);
     server.setExecutor(Executors.newFixedThreadPool(8));
     server.start();
+    String aiStatus = (GEMINI_API_KEY != null && !GEMINI_API_KEY.isBlank()) ? "available" : "unavailable (set GEMINI_API_KEY)";
     System.out.println("ScamSathi running at http://127.0.0.1:" + port);
+    System.out.println("AI Agent status: " + aiStatus);
   }
 
   private static void health(HttpExchange exchange) throws IOException {
@@ -71,6 +103,16 @@ public final class ScamSathiServer {
     }
     send(exchange, 200, "application/json; charset=utf-8",
         "{\"status\":\"ok\",\"engine\":\"ScamSathi explainable rules v2\",\"privacy\":\"local-only\"}");
+  }
+
+  private static void agentHealth(HttpExchange exchange) throws IOException {
+    if (!"GET".equals(exchange.getRequestMethod())) {
+      send(exchange, 405, "application/json; charset=utf-8", "{\"error\":\"GET required\"}");
+      return;
+    }
+    String status = GEMINI_API_KEY != null && !GEMINI_API_KEY.isBlank() ? "available" : "unavailable";
+    String response = "{\"status\":\"ok\",\"agent\":\"ScamSathi AI Conversational Agent v1.0\",\"ai_status\":\"" + status + "\",\"privacy\":\"local-only\"}";
+    send(exchange, 200, "application/json; charset=utf-8", response);
   }
 
   private static void analyzeRequest(HttpExchange exchange) throws IOException {
@@ -128,6 +170,65 @@ public final class ScamSathiServer {
     }
   }
 
+  private static void agentChat(HttpExchange exchange) throws IOException {
+    if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+      send(exchange, 405, "application/json; charset=utf-8", "{\"error\":\"POST required\"}");
+      return;
+    }
+    try {
+      byte[] raw = exchange.getRequestBody().readNBytes(MAX_AGENT_INPUT * 2);
+      if (raw.length > MAX_AGENT_INPUT) {
+        send(exchange, 413, "application/json; charset=utf-8", "{\"error\":\"Agent input too large\"}");
+        return;
+      }
+      Map<String, String> form = parseForm(new String(raw, StandardCharsets.UTF_8));
+      String message = form.getOrDefault("message", "");
+      String context = form.getOrDefault("context", "");
+      if (message.isBlank()) {
+        send(exchange, 400, "application/json; charset=utf-8", "{\"error\":\"Provide a message to analyze\"}");
+        return;
+      }
+      if (message.length() > MAX_MESSAGE) {
+        send(exchange, 413, "application/json; charset=utf-8", "{\"error\":\"Message limit is 4,000 characters\"}");
+        return;
+      }
+      send(exchange, 200, "application/json; charset=utf-8", toJson(chatWithGemini(message, context)));
+    } catch (Exception e) {
+      send(exchange, 400, "application/json; charset=utf-8", "{\"error\":\"Could not process agent request\"}");
+    }
+  }
+
+  private static void agentChatWithContext(HttpExchange exchange) throws IOException {
+    if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
+      send(exchange, 405, "application/json; charset=utf-8", "{\"error\":\"POST required\"}");
+      return;
+    }
+    try {
+      byte[] raw = exchange.getRequestBody().readNBytes(MAX_AGENT_INPUT * 2);
+      if (raw.length > MAX_AGENT_INPUT) {
+        send(exchange, 413, "application/json; charset=utf-8", "{\"error\":\"Agent input too large\"}");
+        return;
+      }
+      Map<String, String> form = parseForm(new String(raw, StandardCharsets.UTF_8));
+      String message = form.getOrDefault("message", "");
+      String conversationHistory = form.getOrDefault("conversationHistory", "");
+      String scanResults = form.getOrDefault("scanResults", "");
+
+      if (message.isBlank()) {
+        send(exchange, 400, "application/json; charset=utf-8", "{\"error\":\"Provide a message to analyze\"}");
+        return;
+      }
+      if (message.length() > MAX_MESSAGE) {
+        send(exchange, 413, "application/json; charset=utf-8", "{\"error\":\"Message limit is 4,000 characters\"}");
+        return;
+      }
+      send(exchange, 200, "application/json; charset=utf-8",
+        toJson(chatWithGeminiAndContext(message, conversationHistory, scanResults)));
+    } catch (Exception e) {
+      send(exchange, 400, "application/json; charset=utf-8", "{\"error\":\"Could not process agent with context\"}");
+    }
+  }
+
   private static void staticFile(HttpExchange exchange) throws IOException {
     String requestPath = URLDecoder.decode(exchange.getRequestURI().getPath(), StandardCharsets.UTF_8);
     if (requestPath.equals("/")) requestPath = "/index.html";
@@ -136,7 +237,7 @@ public final class ScamSathiServer {
       send(exchange, 404, "text/plain; charset=utf-8", "Not found");
       return;
     }
-    send(exchange, 200, contentType(file.getFileName().toString()), Files.readString(file, StandardCharsets.UTF_8));
+    send(exchange, 200, contentType(file.getFileName().toString()), Files.readAllBytes(file));
   }
 
   private static String contentType(String fileName) {
@@ -145,6 +246,7 @@ public final class ScamSathiServer {
     if (name.endsWith(".css")) return "text/css; charset=utf-8";
     if (name.endsWith(".js")) return "text/javascript; charset=utf-8";
     if (name.endsWith(".json")) return "application/json; charset=utf-8";
+    if (name.endsWith(".webmanifest")) return "application/manifest+json; charset=utf-8";
     if (name.endsWith(".svg")) return "image/svg+xml";
     if (name.endsWith(".png")) return "image/png";
     if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
@@ -154,7 +256,10 @@ public final class ScamSathiServer {
   }
 
   private static void send(HttpExchange exchange, int status, String type, String body) throws IOException {
-    byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
+    send(exchange, status, type, body.getBytes(StandardCharsets.UTF_8));
+  }
+
+  private static void send(HttpExchange exchange, int status, String type, byte[] bytes) throws IOException {
     Headers headers = exchange.getResponseHeaders();
     headers.set("Content-Type", type);
     headers.set("Cache-Control", "no-store");
@@ -420,7 +525,7 @@ public final class ScamSathiServer {
       }
     }
     if (result.hasUrl) result.actions.add("Do not open the link from the message. Check the destination independently.");
-    result.actions.add("If money was lost, contact your bank and call India’s cyber-fraud helpline 1930 promptly.");
+    result.actions.add("If money was lost, contact your bank and call India's cyber-fraud helpline 1930 promptly.");
     if (result.signals.isEmpty()) result.actions.add(0, "When unsure, ask someone you trust to review it before acting.");
   }
 
@@ -428,7 +533,273 @@ public final class ScamSathiServer {
     return Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(text).find();
   }
 
+  // ============ AI Agent Methods ============
+
+  private static AgentResult chatWithGemini(String message, String context) {
+    long startTime = System.currentTimeMillis();
+    AgentResult result = new AgentResult();
+
+    if (GEMINI_API_KEY == null || GEMINI_API_KEY.isBlank()) {
+      result.isAvailable = false;
+      result.errorMessage = "Gemini API key not configured. Set GEMINI_API_KEY environment variable.";
+      result.responseTimeMs = System.currentTimeMillis() - startTime;
+      return result;
+    }
+
+    try {
+      // Rate limiting
+      long now = System.currentTimeMillis();
+      if (now - lastRequestTime < MIN_REQUEST_INTERVAL_MS) {
+        Thread.sleep(MIN_REQUEST_INTERVAL_MS - (now - lastRequestTime));
+      }
+      lastRequestTime = System.currentTimeMillis();
+
+      String systemPrompt = getSystemPrompt();
+      String userPrompt = "User message: " + message;
+      if (!context.isEmpty()) {
+        userPrompt += "\n\nContext from scanning: " + context;
+      }
+      userPrompt += "\n\nPlease provide a helpful security response explaining why this might be suspicious and what the user should do. Keep it simple and actionable.";
+
+      // Build Gemini API request with proper JSON structure
+      String jsonRequest = buildGeminiRequest(systemPrompt, userPrompt);
+
+      // Make API call with retry logic
+      String apiResponse = makeGeminiApiCall(jsonRequest);
+      if (apiResponse != null) {
+        String aiResponse = extractTextFromGeminiResponse(apiResponse);
+        if (aiResponse != null && !aiResponse.isEmpty()) {
+          result.agentResponse = aiResponse;
+          result.confidence = "high";
+          result.explanation = "AI-generated security assessment based on Gemini model analysis";
+        } else {
+          result.isAvailable = false;
+          result.errorMessage = "Empty response from Gemini API";
+        }
+      } else {
+        result.isAvailable = false;
+        result.errorMessage = "Failed to get response from Gemini API";
+      }
+    } catch (Exception e) {
+      result.isAvailable = false;
+      result.errorMessage = "Error calling Gemini API: " + e.getMessage();
+    }
+
+    result.responseTimeMs = System.currentTimeMillis() - startTime;
+    return result;
+  }
+
+  private static AgentResult chatWithGeminiAndContext(String message, String conversationHistory, String scanResults) {
+    long startTime = System.currentTimeMillis();
+    AgentResult result = new AgentResult();
+
+    if (GEMINI_API_KEY == null || GEMINI_API_KEY.isBlank()) {
+      result.isAvailable = false;
+      result.errorMessage = "Gemini API key not configured. Set GEMINI_API_KEY environment variable.";
+      result.responseTimeMs = System.currentTimeMillis() - startTime;
+      return result;
+    }
+
+    try {
+      // Rate limiting
+      long now = System.currentTimeMillis();
+      if (now - lastRequestTime < MIN_REQUEST_INTERVAL_MS) {
+        Thread.sleep(MIN_REQUEST_INTERVAL_MS - (now - lastRequestTime));
+      }
+      lastRequestTime = System.currentTimeMillis();
+
+      String systemPrompt = getContextualSystemPrompt();
+      StringBuilder userPrompt = new StringBuilder();
+      userPrompt.append("User message: ").append(message).append("\n\n");
+
+      if (!conversationHistory.isEmpty()) {
+        userPrompt.append("Previous conversation: ").append(conversationHistory).append("\n\n");
+      }
+
+      if (!scanResults.isEmpty()) {
+        userPrompt.append("Scan results context: ").append(scanResults).append("\n\n");
+      }
+
+      userPrompt.append("Please provide a helpful security response that:")
+        .append("\n1. Incorporates both rule-based and AI analysis")
+        .append("\n2. Explains why this is suspicious in simple terms")
+        .append("\n3. Provides actionable next steps")
+        .append("\n4. Distinguishes AI assessment from verified threat intelligence")
+        .append("\n5. Warns against sharing OTPs, PINs, and passwords")
+        .append("\n6. Mentions emergency reporting if money was lost")
+        .append("\n7. Keeps response under 4,000 characters")
+        .append("\n\nRespond as if you were a security assistant helping someone check a scam.")
+        .append("\nUse the scan results to enhance your explanation where relevant.");
+
+      String jsonRequest = buildGeminiRequest(systemPrompt, userPrompt.toString());
+
+      String apiResponse = makeGeminiApiCall(jsonRequest);
+      if (apiResponse != null) {
+        String aiResponse = extractTextFromGeminiResponse(apiResponse);
+        if (aiResponse != null && !aiResponse.isEmpty()) {
+          result.agentResponse = aiResponse;
+          result.confidence = "medium";
+          result.explanation = "AI-generated security assessment incorporating rule-based scan results";
+        } else {
+          result.isAvailable = false;
+          result.errorMessage = "Empty response from Gemini API";
+        }
+      } else {
+        result.isAvailable = false;
+        result.errorMessage = "Failed to get response from Gemini API";
+      }
+    } catch (Exception e) {
+      result.isAvailable = false;
+      result.errorMessage = "Error calling Gemini API with context: " + e.getMessage();
+    }
+
+    result.responseTimeMs = System.currentTimeMillis() - startTime;
+    return result;
+  }
+
+  private static String buildGeminiRequest(String systemPrompt, String userPrompt) {
+    // Gemini API expects: { "contents": [{ "role": "user", "parts": [{ "text": "..." }] }] }
+    // System prompt is prepended to user prompt
+    String combinedPrompt = systemPrompt + "\n\n" + userPrompt;
+    return "{\"contents\":[{\"role\":\"user\",\"parts\":[{\"text\":\"" + escapeJson(combinedPrompt) + "\"}]}]}";
+  }
+
+  private static String makeGeminiApiCall(String jsonRequest) {
+    int attempt = 0;
+    while (attempt <= MAX_RETRY_ATTEMPTS) {
+      try {
+        HttpClient client = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofMillis(GEMINI_TIMEOUT_MS))
+            .build();
+
+        HttpRequest request = HttpRequest.newBuilder(URI.create(GEMINI_API_URL + GEMINI_API_KEY))
+            .header("Content-Type", "application/json")
+            .header("User-Agent", "ScamSathi-AIO-1.0")
+            .POST(HttpRequest.BodyPublishers.ofString(jsonRequest))
+            .timeout(Duration.ofMillis(GEMINI_TIMEOUT_MS))
+            .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() == 200) {
+          return response.body();
+        } else if (response.statusCode() == 429 && attempt < MAX_RETRY_ATTEMPTS) {
+          // Rate limited, retry after backoff
+          System.err.println("Gemini API rate limited (429), attempt " + (attempt + 1) + " of " + (MAX_RETRY_ATTEMPTS + 1));
+          Thread.sleep(1000 * (attempt + 1)); // Exponential backoff
+          attempt++;
+          continue;
+        } else {
+          System.err.println("Gemini API error: HTTP " + response.statusCode() + " - " + response.body());
+          return null;
+        }
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+        System.err.println("Gemini API call interrupted: " + e.getMessage());
+        return null;
+      } catch (Exception e) {
+        System.err.println("Error calling Gemini API (attempt " + (attempt + 1) + "): " + e.getMessage());
+        if (attempt < MAX_RETRY_ATTEMPTS) {
+          attempt++;
+          try { Thread.sleep(500 * (attempt + 1)); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); return null; }
+          continue;
+        }
+        return null;
+      }
+    }
+    return null;
+  }
+
+  private static String extractTextFromGeminiResponse(String jsonResponse) {
+    try {
+      // Gemini response structure: { "candidates": [{ "content": { "parts": [{ "text": "..." }] } }] }
+      int candidatesIdx = jsonResponse.indexOf("\"candidates\"");
+      if (candidatesIdx == -1) return null;
+
+      int partsIdx = jsonResponse.indexOf("\"parts\"", candidatesIdx);
+      if (partsIdx == -1) return null;
+
+      int textIdx = jsonResponse.indexOf("\"text\":\"", partsIdx);
+      if (textIdx == -1) return null;
+
+      int start = textIdx + 8; // "\"text\":\"".length()
+      int end = jsonResponse.indexOf("\"", start);
+
+      if (start >= 0 && end > start) {
+        return jsonResponse.substring(start, end)
+          .replace("\\u003c", "<")
+          .replace("\\u003e", ">")
+          .replace("\\u0022", "\"")
+          .replace("\\n", "\n")
+          .replace("\\t", "\t")
+          .replace("\\\"", "\"")
+          .replace("\\\\", "\\");
+      }
+    } catch (Exception e) {
+      System.err.println("Error extracting text from Gemini response: " + e.getMessage());
+    }
+    return null;
+  }
+
+  private static String getSystemPrompt() {
+    return "You are a cybersecurity assistant helping people identify scams and suspicious communications. Your role is to:\n\n" +
+      "1. Explain why something might be a scam in simple, clear language\n" +
+      "2. Provide actionable next steps for the user\n" +
+      "3. Emphasize the importance of not sharing OTPs, PINs, passwords, or codes\n" +
+      "4. Warn about money transfer risks and verification requirements\n" +
+      "5. Mention emergency contacts if someone has already lost money\n" +
+      "6. Be helpful but not overly technical\n" +
+      "7. Distinguish between AI analysis and verified threat intelligence\n" +
+      "8. Keep responses concise (under 4,000 characters)\n" +
+      "9. Focus on protection, not intimidation\n\n" +
+      "When analyzing messages:\n" +
+      "- Look for urgency, pressure tactics, and requests for secret information\n" +
+      "- Explain what makes something suspicious without being overly alarmist\n" +
+      "- Provide concrete, safe actions the user can take\n" +
+      "- Never claim to have access to real-time bank or transaction data\n\n" +
+      "If the AI provider is unavailable, switch to rule-based analysis mode.";
+  }
+
+  private static String getContextualSystemPrompt() {
+    return "You are a cybersecurity assistant helping people identify scams by combining AI analysis with rule-based detection results. Your role is to:\n\n" +
+      "1. Incorporate both AI insights and rule-based scan results\n" +
+      "2. Explain why something might be suspicious using both analyses\n" +
+      "3. Provide actionable next steps based on combined analysis\n" +
+      "4. Emphasize security best practices (no OTP/PIN sharing, payment verification)\n" +
+      "5. Mention emergency reporting for financial losses\n" +
+      "6. Clearly distinguish between AI-generated assessments and verified threat intelligence\n" +
+      "7. Be conversational and helpful\n" +
+      "8. Keep responses concise but comprehensive\n\n" +
+      "Previous conversation context helps you understand if this is part of an ongoing interaction.\n\n" +
+      "Scan results may include:\n" +
+      "- Rule-based signals (like urgent requests, lookalike domains, payment tricks)\n" +
+      "- Risk scores and levels from previous analyses\n" +
+      "- Specific flags that triggered warnings\n\n" +
+      "Combine this information with your AI analysis to give the user a complete picture of the potential risk. Always prioritize user safety and provide clear, actionable guidance.";
+  }
+
+  private static String escapeJson(String input) {
+    return input.replace("\\", "\\\\")
+      .replace("\n", "\\n")
+      .replace("\r", "\\r")
+      .replace("\t", "\\t")
+      .replace("\"", "\\\"");
+  }
+
+  private static String toJson(AgentResult result) {
+    StringBuilder output = new StringBuilder();
+    output.append("{ \"agentResponse\": ").append(json(result.agentResponse))
+      .append(", \"confidence\": ").append(json(result.confidence))
+      .append(", \"explanation\": ").append(json(result.explanation))
+      .append(", \"isAvailable\": ").append(result.isAvailable)
+      .append(", \"errorMessage\": ").append(json(result.errorMessage))
+      .append(", \"responseTimeMs\": ").append(result.responseTimeMs)
+      .append(" }");
+    return output.toString();
+  }
+
   private static String json(String value) {
+    if (value == null) return "null";
     StringBuilder output = new StringBuilder("\"");
     for (int i = 0; i < value.length(); i++) {
       char c = value.charAt(i);

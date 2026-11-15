@@ -4,6 +4,6 @@
   "private": true,
   "description": "Local-first scam safety checker for messages, URLs and QR codes",
   "scripts": {
-    "test": "node --test tests/rules.test.cjs tests/api-smoke.test.cjs"
+    "test": "node --test tests/rules.test.cjs tests/api-smoke.test.cjs tests/share-target.test.cjs"
   }
 }

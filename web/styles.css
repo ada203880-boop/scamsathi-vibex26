@@ -55,6 +55,15 @@ main { overflow: hidden; }
 .hero-note b, .hero-note small { display: block; }
 .hero-note b { font-size: 12px; }
 .hero-note small { margin-top: 3px; color: var(--muted); font-size: 11px; }
+.share-bridge { max-width: 1160px; margin: 0 auto 38px; padding: 22px 28px; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 28px; align-items: center; border: 1px solid #d7e8dc; border-radius: 14px; background: linear-gradient(110deg, #e9f4ed, #f6f8f4 68%); }
+.share-label, .chain-kicker { color: var(--green); font-size: 10px; font-weight: 800; letter-spacing: 1.2px; }
+.share-bridge h2 { margin: 7px 0; font-size: 22px; letter-spacing: -.5px; }
+.share-bridge p { max-width: 650px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.share-status { display: inline-flex; margin-top: 11px; padding: 5px 9px; border-radius: 99px; background: #fff3df; color: #7a581d; font-size: 10px; font-weight: 700; }
+.share-status.is-ready { background: #e0f1e5; color: #176b4b; }
+.share-steps { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.share-steps li { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.share-steps span { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: white; color: var(--green); font-size: 9px; font-weight: 800; }
 .hero-art { height: 360px; position: relative; overflow: hidden; display: grid; place-items: center; border: 1px solid #dce8dd; border-radius: 26px; background: linear-gradient(145deg, #ebf3eb, #e1ede3); }
 .orbit { position: absolute; border: 1px solid #c7d9ca; border-radius: 50%; }
 .orbit-a { width: 270px; height: 270px; }
@@ -131,6 +140,20 @@ main { overflow: hidden; }
 .score-badge.caution { border-color: #f0dfba; background: #fbf3e6; color: #9b6b17; }
 .score-badge.high, .score-badge.critical { border-color: #f2d7d2; background: #f8ece9; color: #b64d40; }
 .score-note { margin-top: 5px; color: #8b978e; font-size: 11px; }
+.chain-map { margin-top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: #f7faf7; }
+.chain-map.is-escalating { border-color: #ecc4ba; background: #fff8f5; }
+.chain-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
+.chain-title { margin: 5px 0 3px; font-size: 15px; }
+.chain-summary, .chain-note { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.chain-count { flex: 0 0 auto; padding: 6px 9px; border-radius: 99px; background: white; color: var(--green); font-size: 10px; font-weight: 800; }
+.chain-map.is-escalating .chain-count { color: #9c3c29; }
+.chain-stages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin: 13px 0 10px; padding: 0; list-style: none; }
+.chain-stage { min-height: 68px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+.chain-stage.is-matched { border-color: #9ac8aa; box-shadow: inset 3px 0 var(--green); }
+.chain-map.is-escalating .chain-stage.is-matched { border-color: #dfaa9d; box-shadow: inset 3px 0 #b74731; }
+.chain-stage strong, .chain-stage small { display: block; }
+.chain-stage strong { font-size: 11px; }
+.chain-stage small { margin-top: 5px; color: var(--muted); font-size: 10px; }
 .result-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 17px; padding-top: 17px; border-top: 1px solid var(--line); }
 .result-columns h3 { margin: 0 0 11px; font-size: 14px; }
 .signals, .actions { display: grid; gap: 8px; }
@@ -238,6 +261,7 @@ footer .brand small { font-size: 8px; }
   .header-right { gap: 8px; }
   .secure { font-size: 11px; }
   .hero { min-height: auto; grid-template-columns: 1fr; padding: 40px 18px 35px; }
+  .share-bridge { grid-template-columns: 1fr; margin: 0 18px 28px; padding: 18px; }
   .hero h1 { font-size: clamp(50px, 16vw, 70px); letter-spacing: -3px; }
   .intro { font-size: 15px; }
   .hero-art { height: 270px; border-radius: 18px; }
@@ -264,6 +288,7 @@ footer .brand small { font-size: 8px; }
   .score-badge { width: 66px; height: 66px; flex-basis: 66px; }
   .score-badge strong { font-size: 20px; }
   .result-columns { grid-template-columns: 1fr; gap: 17px; }
+  .chain-stages { grid-template-columns: 1fr; }
   .result-bottom { align-items: flex-start; flex-direction: column; }
   .case-card { grid-template-columns: 36px 1fr; gap: 11px; padding: 18px; }
   .case-content blockquote { font-size: 17px; }

@@ -9,7 +9,8 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-echo Starting ScamSathi at http://127.0.0.1:18878
+echo Starting ScamSathi with integrated AI Agent at http://127.0.0.1:18878
+echo Set GEMINI_API_KEY environment variable to enable AI features
 if /i not "%~1"=="--no-browser" start "ScamSathi" http://127.0.0.1:18878
 java --add-modules jdk.httpserver -cp build ScamSathiServer 18878
 pause

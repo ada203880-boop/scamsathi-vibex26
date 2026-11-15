@@ -52,6 +52,19 @@ test('Java API and static QR page work locally', { timeout: 20000 }, async t => 
   const qrPage = await fetch(`${base}/qr-scanner.html`);
   assert.equal(qrPage.status, 200);
   assert.match(await qrPage.text(), /Scan and inspect a QR/);
+  const manifest = await fetch(`${base}/manifest.webmanifest`);
+  assert.equal(manifest.status, 200);
+  assert.match(manifest.headers.get('content-type'), /application\/manifest\+json/);
+  const manifestData = await manifest.json();
+  assert.equal(manifestData.share_target.method, 'POST');
+  assert.equal(manifestData.share_target.action, './share-target/');
+  const icon = await fetch(`${base}/icons/icon-192.png`);
+  assert.equal(icon.status, 200);
+  assert.match(icon.headers.get('content-type'), /image\/png/);
+  assert.equal(Buffer.from(await icon.arrayBuffer()).subarray(0, 4).toString('hex'), '89504e47');
+  const shareWorker = await fetch(`${base}/sw.js`);
+  assert.equal(shareWorker.status, 200);
+  assert.match(await shareWorker.text(), /share-target/);
   const worker = await fetch(`${base}/vendor/qr-scanner/qr-scanner-worker.min.js`);
   assert.equal(worker.status, 200);
   assert.match(worker.headers.get('content-type'), /javascript/);
@@ -94,4 +107,51 @@ test('Java API and static QR page work locally', { timeout: 20000 }, async t => 
   assert.equal(tooLong.status, 413);
   const longQr = await fetch(`${base}/api/qr/analyze`, { method: 'POST', body: new URLSearchParams({ payload: 'x'.repeat(4097) }) });
   assert.equal(longQr.status, 413);
+
+  // AI Agent endpoints (no API key - should return unavailable gracefully)
+  const agentHealth = await fetch(`${base}/api/agent/health`);
+  assert.equal(agentHealth.status, 200);
+  const agentHealthData = await agentHealth.json();
+  assert.equal(agentHealthData.status, 'ok');
+  assert.equal(agentHealthData.privacy, 'local-only');
+  assert.ok(agentHealthData.ai_status === 'available' || agentHealthData.ai_status === 'unavailable');
+
+  const agentChat = await fetch(`${base}/api/agent/chat`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ message: 'Is this a scam?' })
+  });
+  assert.equal(agentChat.status, 200);
+  const agentChatData = await agentChat.json();
+  assert.ok(typeof agentChatData.isAvailable === 'boolean');
+  assert.ok(typeof agentChatData.errorMessage === 'string' || agentChatData.errorMessage === null);
+  assert.ok(typeof agentChatData.responseTimeMs === 'number');
+
+  const agentChatWithContext = await fetch(`${base}/api/agent/chatWithContext`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      message: 'What should I do next?',
+      conversationHistory: 'Previous question about OTP',
+      scanResults: '{"score":75,"level":"critical"}'
+    })
+  });
+  assert.equal(agentChatWithContext.status, 200);
+  const contextData = await agentChatWithContext.json();
+  assert.ok(typeof contextData.isAvailable === 'boolean');
+
+  // Agent input validation - empty message returns 400 (bad request)
+  const agentEmpty = await fetch(`${base}/api/agent/chat`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ message: '' })
+  });
+  assert.equal(agentEmpty.status, 400);
+
+  const agentTooLong = await fetch(`${base}/api/agent/chat`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ message: 'x'.repeat(4001) })
+  });
+  assert.equal(agentTooLong.status, 413);
 });

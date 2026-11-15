@@ -7,6 +7,29 @@
   const activity = { checks: 0, warnings: 0, qr: 0, recent: [] };
   let language = 'en';
   let exampleIndex = 0;
+  const CHAIN_COPY = {
+    en: {
+      kicker: 'EXPLAINABLE ATTACK-CHAIN MAP', title: 'How this message may move you',
+      summary: count => count >= 2 ? 'Several stages appear together. Verify independently before acting.' : 'Few linked stages were found; this does not prove the message is safe.',
+      count: count => `${count}/3 cues`, found: 'Cue found', absent: 'Not found',
+      note: 'A transparent signal map, not a fraud verdict or a trained AI prediction.',
+      stages: ['Borrow trust', 'Create pressure', 'Ask for code, money or access']
+    },
+    hi: {
+      kicker: 'समझने योग्य स्कैम-क्रम', title: 'यह संदेश आपको कैसे आगे बढ़ा सकता है',
+      summary: count => count >= 2 ? 'कई चरण साथ दिखे। कार्रवाई से पहले स्वतंत्र रूप से पुष्टि करें।' : 'कम जुड़े संकेत मिले; इससे संदेश सुरक्षित साबित नहीं होता।',
+      count: count => `${count}/3 संकेत`, found: 'संकेत मिला', absent: 'नहीं मिला',
+      note: 'यह संकेतों का नक्शा है, धोखाधड़ी का फैसला या प्रशिक्षित AI का अनुमान नहीं।',
+      stages: ['भरोसा जीतना', 'दबाव बनाना', 'कोड, पैसा या एक्सेस माँगना']
+    },
+    or: {
+      kicker: 'ବୁଝିହେଉଥିବା ଠକେଇ-କ୍ରମ', title: 'ଏହି ବାର୍ତ୍ତା ଆପଣଙ୍କୁ କିପରି ଆଗକୁ ନେଇପାରେ',
+      summary: count => count >= 2 ? 'ଏକାଧିକ ପର୍ଯ୍ୟାୟ ଏକାଠି ଦେଖାଯାଉଛି। କାର୍ଯ୍ୟ ପୂର୍ବରୁ ନିଜେ ଯାଞ୍ଚ କରନ୍ତୁ।' : 'କମ୍ ସଂଯୁକ୍ତ ସଙ୍କେତ ମିଳିଲା; ଏହା ସୁରକ୍ଷିତ ବୋଲି ପ୍ରମାଣ ନୁହେଁ।',
+      count: count => `${count}/3 ସଙ୍କେତ`, found: 'ସଙ୍କେତ ମିଳିଲା', absent: 'ମିଳିଲା ନାହିଁ',
+      note: 'ଏହା ସଙ୍କେତର ମାନଚିତ୍ର, ଠକେଇର ନିଶ୍ଚିତ ରାୟ କିମ୍ବା AI ପୂର୍ବାନୁମାନ ନୁହେଁ।',
+      stages: ['ବିଶ୍ୱାସ ହାସଲ', 'ଚାପ ସୃଷ୍ଟି', 'କୋଡ୍, ଟଙ୍କା କିମ୍ବା ଆକ୍ସେସ୍ ମାଗିବା']
+    }
+  };
 
   const UI = {
     en: {
@@ -196,6 +219,33 @@
     badge.className = `score-badge ${['low','caution','high','critical'].includes(data.level) ? data.level : 'caution'}`;
     $('[data-result-disclaimer]', target).textContent = t('score-disclaimer');
 
+    const chainBox = $('[data-attack-chain]', target);
+    if (chainBox) {
+      const chain = data.attackChain;
+      chainBox.hidden = !chain;
+      if (chain) {
+        const copy = CHAIN_COPY[language] || CHAIN_COPY.en;
+        chainBox.classList.toggle('is-escalating', chain.count >= 2);
+        $('.chain-kicker', chainBox).textContent = copy.kicker;
+        $('.chain-title', chainBox).textContent = copy.title;
+        $('.chain-summary', chainBox).textContent = copy.summary(chain.count);
+        $('.chain-count', chainBox).textContent = copy.count(chain.count);
+        $('.chain-note', chainBox).textContent = copy.note;
+        const stages = $('.chain-stages', chainBox);
+        stages.replaceChildren();
+        chain.stages.forEach((stage, index) => {
+          const item = document.createElement('li');
+          item.className = `chain-stage${stage.matched ? ' is-matched' : ''}`;
+          const title = document.createElement('strong');
+          title.textContent = copy.stages[index];
+          const state = document.createElement('small');
+          state.textContent = stage.matched ? copy.found : copy.absent;
+          item.append(title, state);
+          stages.append(item);
+        });
+      }
+    }
+
     const signalBox = $('[data-result-signals]', target);
     signalBox.replaceChildren();
     if (!Array.isArray(data.signals) || data.signals.length === 0) {
@@ -261,7 +311,9 @@
 
   async function analyzeMessage(message, url) {
     const data = await postToLocalApi('api/analyze', { message, url });
-    return data || window.ScamSathiRules.analyze(message, url);
+    const fallback = window.ScamSathiRules.analyze(message, url);
+    if (data) data.attackChain = fallback.attackChain;
+    return data || fallback;
   }
 
   async function analyzeQr(payload) {
@@ -358,6 +410,39 @@
     }
   }
 
+  async function registerShareTargetWorker() {
+    const status = $('#shareReady');
+    if (!('serviceWorker' in navigator)) {
+      if (status) status.textContent = 'Share-to-check is unavailable here; use the manual check below.';
+      return;
+    }
+    try {
+      await navigator.serviceWorker.register(new URL('sw.js', document.baseURI));
+      await navigator.serviceWorker.ready;
+      if (status) {
+        status.textContent = 'Private share receiver is ready on this device.';
+        status.classList.add('is-ready');
+      }
+    } catch (_) {
+      if (status) status.textContent = 'Share-to-check is unavailable here; use the manual check below.';
+    }
+  }
+
+  async function consumeSharedMessage() {
+    const inbox = $('#share-inbox');
+    if (!inbox) return;
+    const message = String(inbox.value || '').trim().slice(0, 4000);
+    const truncated = inbox.dataset.truncated === 'true';
+    inbox.remove();
+    if (!message) return showToast('No message text was shared.');
+    $('#message').value = message;
+    const sharedUrl = message.match(/https?:\/\/[^\s<>"']+/i)?.[0]?.replace(/[),.;!?]+$/, '') || '';
+    $('#url').value = sharedUrl;
+    $('#charCount').textContent = `${message.length.toLocaleString()} / 4,000`;
+    if (truncated) showToast('Shared text shortened to 4,000 characters.');
+    void runMessageCheck();
+  }
+
   async function runQrCheck(payload, shouldScroll = true) {
     const value = String(payload || '').trim();
     const error = $('#qrError');
@@ -424,4 +509,6 @@
     showToast
   };
   init();
+  void registerShareTargetWorker();
+  void consumeSharedMessage();
 })();
