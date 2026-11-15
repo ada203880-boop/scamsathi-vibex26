@@ -1,10 +1,145 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8f5"><title>ScamSathi — Pause. Check. Protect.</title><link rel="stylesheet" href="styles.css"></head>
-<body><header class="top"><a class="brand" href="#top"><span class="logo">S</span><span>ScamSathi<small>COMMUNITY SAFETY TOOL</small></span></a><nav><a href="#check">Check a message</a><a href="#learn">Learn the signs</a></nav><div class="header-right"><span class="secure"><i></i> Local analysis</span><button class="lang" id="langBtn">हिंदी</button></div></header>
-<main id="top"><section class="hero"><div class="hero-copy"><div class="kicker"><span>TRACK 3</span> CYBER SAFETY</div><h1>Pause.<br><em>Check.</em><br>Protect.</h1><p class="intro" data-en="A suspicious message can put your money at risk. Check its warning signs before you click, share a code, or approve a payment." data-hi="संदिग्ध संदेश आपके पैसे को खतरे में डाल सकता है। क्लिक करने, कोड साझा करने या भुगतान स्वीकार करने से पहले उसके संकेत जाँचें।">A suspicious message can put your money at risk. Check its warning signs before you click, share a code, or approve a payment.</p><a class="cta" href="#check">Check a message <span>↓</span></a><div class="hero-note"><span class="lock">⌑</span><span><b>Your input stays local</b><small>Analyzed by the Java service on this device</small></span></div></div><div class="hero-art"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="shield"><span>✓</span></div><div class="art-tag tag-top"><b>01</b> CHECK THE SIGNS</div><div class="art-tag tag-bottom"><b>02</b> CHOOSE A SAFE NEXT STEP</div><div class="spark spark-a">✳</div><div class="spark spark-b">✳</div></div></section>
-<section class="checker" id="check"><div class="section-intro"><div><div class="kicker">THE SCAM CHECKER</div><h2>What did they send you?</h2><p>Paste the message or call transcript. Add the link separately if there is one.</p></div><span class="step">01 <i>/</i> 03</span></div><div class="check-grid"><div class="input-panel"><label for="message">MESSAGE OR CALL TRANSCRIPT <span>up to 4,000 characters</span></label><textarea id="message" maxlength="4000" placeholder="Example: Your bank account will be blocked today. Verify your KYC now at…"></textarea><div class="input-foot"><span id="charCount">0 / 4,000</span><button class="example" id="exampleBtn">Try a sample message ↗</button></div><label class="url-label" for="url">LINK IN THE MESSAGE <span>optional · checked without opening it</span></label><div class="url-wrap"><span>↗</span><input type="text" id="url" maxlength="2048" placeholder="Paste a link or domain here"></div><div class="input-actions"><button class="analyze" id="analyzeBtn">Analyze warning signs <span>→</span></button><span class="micro">Your message is sent only to the local app running on this device.</span></div><div class="error" id="error" hidden></div></div><aside class="side-panel"><div class="side-badge">BEFORE YOU ACT</div><h3>Three things to remember</h3><ul><li><span>01</span><div><b>Never share an OTP or PIN</b><small>Not even with someone claiming to be from your bank.</small></div></li><li><span>02</span><div><b>You don’t pay to receive money</b><small>A UPI PIN authorizes money going out.</small></div></li><li><span>03</span><div><b>Pause if someone pressures you</b><small>Call the organization on a number you find yourself.</small></div></li></ul><a class="report-link" href="https://cybercrime.gov.in/" target="_blank" rel="noopener">Official cybercrime reporting portal ↗</a></aside></div>
-<div class="result" id="result" aria-live="polite" hidden><div class="result-head"><div><div class="kicker">YOUR CHECK RESULTS</div><h2 id="resultTitle">Warning signs found</h2><p id="resultSummary"></p></div><div id="scoreBadge" class="score-badge"><strong>0</strong><small>SIGNAL<br>SCORE</small></div></div><div class="score-note">Heuristic signal score · not a probability of fraud</div><div class="result-columns"><div><h3>Why it was flagged</h3><div id="signals" class="signals"></div></div><div><h3>Safer next steps</h3><ol id="actions" class="actions"></ol></div></div><div class="result-bottom"><span id="privacyNote">No content is saved by the analysis service.</span><button id="copyBtn" class="copy">Copy safety summary</button></div></div>
-</section>
-<section class="learn" id="learn"><div class="learn-head"><div><div class="kicker">A MOMENT TO VERIFY</div><h2>Spot the pressure tactic</h2><p>ScamSathi checks for explainable patterns. See what those patterns look like.</p></div><div class="learn-arrows"><button id="prevCase" aria-label="Previous example">←</button><button id="nextCase" aria-label="Next example">→</button></div></div><div class="case-card"><div class="case-number"><span id="caseNum">01</span><small>/ 03</small></div><div class="case-content"><div class="case-tag" id="caseTag">FAKE KYC ALERT</div><blockquote id="caseQuote">“Your account will be blocked in 2 hours. Update KYC immediately and share the OTP with our agent.”</blockquote><div class="case-explain"><b>What to notice</b><p id="caseExplain">Urgency, account threat, and a request for an OTP. A real bank will not ask you to tell someone your OTP.</p></div></div><div class="case-mark">!</div></div></section>
-<section class="help"><div class="help-icon">↗</div><div><div class="kicker">IF MONEY HAS ALREADY LEFT YOUR ACCOUNT</div><h2>Act quickly. Contact your bank and report it.</h2><p>In India, call <a href="tel:1930">1930</a> or use the Government of India’s <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener">National Cyber Crime Reporting Portal</a>.</p></div><a class="help-button" href="https://cybercrime.gov.in/" target="_blank" rel="noopener">Open official portal ↗</a></section>
-<section class="limits"><strong>What this tool can and cannot tell you</strong><p>ScamSathi uses transparent rules to flag known warning patterns in text and URLs. A high score means multiple patterns matched; it is not a verified fraud finding. A low score does not prove safety. It does not access calls, open links, contact banks, block payments, or report incidents for you.</p></section></main>
-<footer><a class="brand" href="#top"><span class="logo">S</span><span>ScamSathi<small>VIBEX CODES 26 · TRACK 3</small></span></a><span>Built to help people pause before they pay.</span><span>Prototype · Java rules engine</span></footer><div class="toast" id="toast" role="status"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8f4">
+  <meta name="description" content="ScamSathi explains warning signs in suspicious messages, links and QR codes. Check before you share a code or approve a payment.">
+  <title>ScamSathi — Pause. Check. Protect.</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="rules.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="top" id="top">
+    <a class="brand" href="#top" aria-label="ScamSathi home">
+      <span class="logo" aria-hidden="true">S</span>
+      <span>ScamSathi<small data-i18n="brand-tag">COMMUNITY CYBER SAFETY</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#check" data-i18n="nav-check">Check a message</a>
+      <a href="qr-scanner.html" data-i18n="nav-qr">Scan a QR</a>
+      <a href="#learn" data-i18n="nav-learn">Learn the signs</a>
+    </nav>
+    <div class="header-right">
+      <span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Private checks</span></span>
+      <label class="sr-only" for="languageSelect" data-i18n="language-label">Language</label>
+      <select class="lang" id="languageSelect" aria-label="Choose language">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
+        <option value="or">ଓଡ଼ିଆ</option>
+      </select>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="kicker"><span>TRACK 3</span><span data-i18n="track-label">CYBER SAFETY</span></div>
+        <h1><span data-i18n="hero-line-1">Pause.</span><br><em><span data-i18n="hero-line-2">Check.</span></em><br><span data-i18n="hero-line-3">Protect.</span></h1>
+        <p class="intro" data-i18n="hero-intro">Check the warning signs in a suspicious message, link or QR code before you act.</p>
+        <a class="cta" href="#check"><span data-i18n="hero-cta">Check a message</span><span aria-hidden="true">↓</span></a>
+        <div class="hero-note">
+          <span class="lock" aria-hidden="true">⌑</span>
+          <span><b data-i18n="hero-privacy-title">Your content stays in this browser</b><small data-i18n="hero-privacy-copy">Rules check the text; messages are not saved.</small></span>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
+        <div class="shield"><span>✓</span></div>
+        <div class="art-tag tag-top"><b>01</b><span data-i18n="hero-art-1">CHECK THE SIGNS</span></div>
+        <div class="art-tag tag-bottom"><b>02</b><span data-i18n="hero-art-2">CHOOSE A SAFE NEXT STEP</span></div>
+        <div class="spark spark-a">✳</div><div class="spark spark-b">✳</div>
+      </div>
+    </section>
+
+    <section class="session" aria-labelledby="session-title">
+      <div class="session-heading">
+        <div><div class="kicker" data-i18n="session-kicker">THIS BROWSER TAB</div><h2 id="session-title" data-i18n="session-title">Your checks</h2></div>
+        <p data-i18n="session-note">Counts reset when this tab closes. No message text is kept.</p>
+      </div>
+      <div class="session-grid">
+        <article class="session-metric"><span data-i18n="metric-checks">CHECKS</span><strong id="metricChecks">0</strong><small data-i18n="metric-checks-note">Completed in this tab</small></article>
+        <article class="session-metric"><span data-i18n="metric-warnings">CHECKS WITH WARNING SIGNS</span><strong id="metricWarnings">0</strong><small data-i18n="metric-warnings-note">A warning is not a verdict</small></article>
+        <article class="session-metric"><span data-i18n="metric-qr">QR CHECKS</span><strong id="metricQr">0</strong><small data-i18n="metric-qr-note">Camera, image or pasted text</small></article>
+        <article class="session-recent"><span data-i18n="recent-title">RECENT ACTIVITY</span><p id="recentActivity" data-i18n="recent-empty">Nothing yet. Run a check to see activity for this tab.</p></article>
+      </div>
+    </section>
+
+    <section class="checker" id="check" aria-labelledby="checker-title">
+      <div class="section-intro">
+        <div><div class="kicker" data-i18n="checker-kicker">MESSAGE AND LINK CHECK</div><h2 id="checker-title" data-i18n="checker-title">What did they send you?</h2><p data-i18n="checker-help">Paste a message or call transcript. Add a link separately if there is one.</p></div>
+        <span class="step">01 <i>/</i> 03</span>
+      </div>
+      <div class="check-grid">
+        <div class="input-panel">
+          <label for="message"><span data-i18n="message-label">MESSAGE OR CALL TRANSCRIPT</span><span data-i18n="message-limit">up to 4,000 characters</span></label>
+          <textarea id="message" maxlength="4000" placeholder="Example: Your bank account will be blocked. Share your OTP now…" aria-describedby="charCount"></textarea>
+          <div class="input-foot"><span id="charCount">0 / 4,000</span><button class="example" id="exampleBtn" type="button" data-i18n="try-example">Try a sample message ↗</button></div>
+          <label class="url-label" for="url"><span data-i18n="url-label">LINK IN THE MESSAGE</span><span data-i18n="url-note">optional · checked without opening it</span></label>
+          <div class="url-wrap"><span aria-hidden="true">↗</span><input type="text" id="url" maxlength="2048" placeholder="Paste a link or domain here" data-i18n-placeholder="url-placeholder" autocomplete="off" spellcheck="false"></div>
+          <div class="input-actions"><button class="analyze" id="analyzeBtn" type="button"><span data-i18n="analyze-button">Analyze warning signs</span><span aria-hidden="true">→</span></button><span class="micro" data-i18n="input-local-note">Checked in this browser or by the local Java service.</span></div>
+          <div class="error" id="error" role="alert" hidden></div>
+        </div>
+        <aside class="side-panel">
+          <div class="side-badge" data-i18n="before-act">BEFORE YOU ACT</div>
+          <h3 data-i18n="three-rules">Three things to remember</h3>
+          <ul>
+            <li><span>01</span><div><b data-i18n="rule-otp-title">Never share an OTP or PIN</b><small data-i18n="rule-otp-copy">Not even with someone claiming to be from your bank.</small></div></li>
+            <li><span>02</span><div><b data-i18n="rule-upi-title">You do not pay to receive money</b><small data-i18n="rule-upi-copy">A UPI PIN authorizes money going out.</small></div></li>
+            <li><span>03</span><div><b data-i18n="rule-pressure-title">Pause if someone pressures you</b><small data-i18n="rule-pressure-copy">Call the organization on a number you find yourself.</small></div></li>
+          </ul>
+          <a class="report-link" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="report-link">Official cybercrime reporting portal ↗</a>
+        </aside>
+      </div>
+      <article class="result" id="messageResult" data-result hidden aria-live="polite">
+        <div class="result-head"><div><div class="kicker" data-i18n="result-kicker">YOUR CHECK RESULTS</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
+        <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
+        <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
+        <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
+      </article>
+    </section>
+
+    <section class="qr-section" id="qr" aria-labelledby="qr-title">
+      <div class="section-intro">
+        <div><div class="kicker" data-i18n="qr-kicker">QR AND PAYMENT SAFETY</div><h2 id="qr-title" data-i18n="qr-title">Check before you scan or pay</h2><p data-i18n="qr-help">Scan with your camera, choose a QR image, or paste decoded content. ScamSathi will not open a destination or start a payment.</p></div>
+        <span class="step">02 <i>/</i> 03</span>
+      </div>
+      <div class="qr-actions"><a class="analyze" href="qr-scanner.html" data-i18n="open-scanner">Open QR scanner <span aria-hidden="true">→</span></a><span class="micro" data-i18n="camera-note">Camera access starts only after you press Start scanning. HTTPS or localhost is required.</span></div>
+      <div class="qr-paste input-panel">
+        <label for="qrPayload"><span data-i18n="qr-paste-label">PASTE DECODED QR CONTENT</span><span data-i18n="qr-paste-note">up to 4,096 characters</span></label>
+        <textarea id="qrPayload" maxlength="4096" placeholder="upi://pay?pa=merchant@example&amp;pn=Merchant&amp;am=10&amp;cu=INR" data-i18n-placeholder="qr-placeholder"></textarea>
+        <div class="input-actions"><button class="analyze" id="qrAnalyzeBtn" type="button"><span data-i18n="inspect-qr">Inspect QR content</span><span aria-hidden="true">→</span></button><span class="micro" data-i18n="upi-unverified">UPI details in a QR are unverified. Confirm the payee and amount in your UPI app.</span></div>
+        <div class="error" id="qrError" role="alert" hidden></div>
+      </div>
+      <article class="result" id="qrResult" data-result hidden aria-live="polite">
+        <div class="result-head"><div><div class="kicker" data-i18n="qr-result-kicker">QR CHECK RESULTS</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
+        <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
+        <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
+        <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
+      </article>
+    </section>
+
+    <section class="learn" id="learn" aria-labelledby="learn-title">
+      <div class="learn-head"><div><div class="kicker" data-i18n="learn-kicker">A MOMENT TO VERIFY</div><h2 id="learn-title" data-i18n="learn-title">Spot the pressure tactic</h2><p data-i18n="learn-copy">Synthetic examples show the warning patterns ScamSathi can explain.</p></div><div class="learn-arrows"><button id="prevCase" type="button" aria-label="Previous example">←</button><button id="nextCase" type="button" aria-label="Next example">→</button></div></div>
+      <article class="case-card"><div class="case-number"><span id="caseNum">01</span><small>/ 03</small></div><div class="case-content"><div class="case-tag" id="caseTag">FAKE KYC ALERT</div><blockquote id="caseQuote"></blockquote><div class="case-explain"><b data-i18n="what-notice">What to notice</b><p id="caseExplain"></p></div></div><div class="case-mark" aria-hidden="true">!</div></article>
+    </section>
+
+    <section class="audio-note" id="audio" aria-labelledby="audio-title">
+      <div class="audio-icon" aria-hidden="true">◌</div><div><div class="kicker" data-i18n="audio-kicker">VOICE SCAM SAFETY</div><h2 id="audio-title" data-i18n="audio-title">Audio deepfake analysis is not available</h2><p data-i18n="audio-copy">ScamSathi does not upload or analyze recordings and cannot confirm whether a voice is cloned. If a caller urgently asks for money, hang up and call the person using a number you already trust.</p></div>
+    </section>
+
+    <section class="help" aria-labelledby="help-title">
+      <div class="help-icon" aria-hidden="true">↗</div><div><div class="kicker" data-i18n="help-kicker">IF MONEY HAS ALREADY LEFT YOUR ACCOUNT</div><h2 id="help-title" data-i18n="help-title">Act quickly. Contact your bank and report it.</h2><p><span data-i18n="help-copy">In India, call</span> <a href="tel:1930">1930</a> <span data-i18n="help-copy-2">or use the Government of India’s</span> <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="portal-name">National Cyber Crime Reporting Portal</a>.</p></div><a class="help-button" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="open-portal">Open official portal ↗</a>
+    </section>
+
+    <section class="limits" aria-labelledby="limits-title">
+      <strong id="limits-title" data-i18n="limits-title">What this tool can and cannot tell you</strong>
+      <p data-i18n="limits-copy">ScamSathi uses rules to flag patterns in message text, URL structure and decoded QR content. It does not use a trained fraud model, threat-intelligence feed or bank lookup. The score is not a probability or confirmed verdict; a low score does not prove safety. It does not listen to calls, open links, block payments or submit reports. Message content is not retained.</p>
+    </section>
+  </main>
+
+  <footer><a class="brand" href="#top"><span class="logo" aria-hidden="true">S</span><span>ScamSathi<small>VIBEX CODES 26 · TRACK 3</small></span></a><span data-i18n="footer-tag">Built to help people pause before they pay.</span><a href="https://github.com/ada203880-boop/scamsathi-vibex26/tree/feature/scamsathi-vibex-final" target="_blank" rel="noopener noreferrer" data-i18n="source-link">Source code ↗</a><span data-i18n="footer-tech">Prototype · explainable rules</span></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

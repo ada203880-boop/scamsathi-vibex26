@@ -1,0 +1,9 @@
+{
+  "name": "scamsathi-vibex26",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local-first scam safety checker for messages, URLs and QR codes",
+  "scripts": {
+    "test": "node --test tests/rules.test.cjs tests/api-smoke.test.cjs"
+  }
+}

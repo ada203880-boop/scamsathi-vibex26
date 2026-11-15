@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f8f4">
+  <meta name="description" content="Decode and inspect QR codes without opening links or initiating payments.">
+  <title>ScamSathi — QR safety scanner</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="rules.js" defer></script>
+  <script src="app.js" defer></script>
+  <script type="module" src="qr-scanner.js"></script>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="index.html" aria-label="ScamSathi home">
+      <span class="logo" aria-hidden="true">S</span>
+      <span>ScamSathi<small data-i18n="brand-tag">COMMUNITY CYBER SAFETY</small></span>
+    </a>
+    <nav aria-label="Main navigation"><a href="index.html#check" data-i18n="nav-check">Check a message</a><a href="index.html#learn" data-i18n="nav-learn">Learn the signs</a></nav>
+    <div class="header-right"><span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Private checks</span></span><label class="sr-only" for="languageSelect" data-i18n="language-label">Language</label><select class="lang" id="languageSelect" aria-label="Choose language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="or">ଓଡ଼ିଆ</option></select></div>
+  </header>
+
+  <main class="scanner-main">
+    <a class="back-link" href="index.html#qr" data-i18n="scanner-back">← Back to ScamSathi</a>
+    <div class="scanner-top"><div><div class="kicker" data-i18n="qr-kicker">QR AND PAYMENT SAFETY</div><h1 data-i18n="scanner-title">Scan and inspect a QR</h1><p data-i18n="scanner-desc">The scanner reads the QR and explains its contents. It never opens a link, shares camera footage, or starts a payment.</p></div><span class="step">02 <i>/</i> 03</span></div>
+
+    <div class="scanner-layout">
+      <section class="camera-panel" aria-label="Camera QR scanner">
+        <div class="camera-stage" id="cameraStage">
+          <video id="cameraVideo" muted playsinline aria-label="Live camera preview"></video>
+          <div class="camera-empty" id="cameraEmpty"><span class="camera-glyph" aria-hidden="true">▦</span><p data-i18n="scan-idle">Your camera remains off until you choose Start scanning.</p></div>
+          <div class="scan-overlay" id="scanOverlay" hidden aria-hidden="true"><div class="scan-frame"></div></div>
+        </div>
+        <div class="scan-status" id="scanStatus" role="status" aria-live="polite" data-kind="idle">Your camera remains off until you choose Start scanning.</div>
+        <div class="camera-controls">
+          <button class="primary-control" id="startScan" type="button" data-i18n="start-scan">Start scanning</button>
+          <button id="pauseScan" type="button" disabled data-i18n="pause-scan">Pause scanning</button>
+          <button id="switchCamera" type="button" disabled data-i18n="switch-camera">Switch camera</button>
+          <button id="toggleFlash" type="button" disabled data-i18n="flashlight">Flashlight</button>
+          <button id="stopScan" type="button" disabled data-i18n="stop-scan">Stop camera</button>
+        </div>
+        <div class="scanner-disclosure" data-i18n="scanner-safe-note">Camera access requires a secure page (HTTPS or localhost). Video is processed in your browser and is not uploaded. Check every payment detail in your UPI app.</div>
+      </section>
+
+      <aside class="scanner-side">
+        <h2 data-i18n="image-title">Use a QR image</h2>
+        <p data-i18n="image-help">Choose an image saved on this device. It is decoded in the browser and is not uploaded.</p>
+        <div class="file-drop"><label for="qrImage" data-i18n="file-label">Choose QR image</label><input id="qrImage" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small data-i18n="file-limit">Images up to 10 MB. If scanning fails, try a clearer, tightly framed image.</small></div>
+        <h2 data-i18n="manual-title">Paste QR content</h2>
+        <p data-i18n="manual-help">If another QR reader already decoded it, paste the text here.</p>
+        <textarea class="manual-payload" id="manualPayload" maxlength="4096" placeholder="upi://pay?pa=merchant@example&amp;pn=Merchant&amp;am=10&amp;cu=INR" data-i18n-placeholder="qr-placeholder"></textarea>
+        <button class="analyze" id="manualAnalyze" type="button"><span data-i18n="manual-button">Inspect pasted content</span><span aria-hidden="true">→</span></button>
+      </aside>
+    </div>
+
+    <section class="result" id="scanResult" data-result hidden aria-live="polite">
+      <div class="result-head"><div><div class="kicker" data-i18n="decoded-title">QR content inspected</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
+      <div class="decoded-value" id="decodedValue" hidden></div>
+      <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
+      <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
+      <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
+    </section>
+  </main>
+  <footer><a class="brand" href="index.html"><span class="logo" aria-hidden="true">S</span><span>ScamSathi<small>VIBEX CODES 26 · TRACK 3</small></span></a><span data-i18n="footer-tag">Built to help people pause before they pay.</span><span data-i18n="footer-tech">Prototype · explainable rules</span></footer>
+</body>
+</html>

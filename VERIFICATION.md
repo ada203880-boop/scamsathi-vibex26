@@ -1,18 +1,20 @@
-# ScamSathi verification record
+# Verification record
 
-Verified on November 15, 2026 on Windows with the packaged `outputs/scamsathi` project.
+Verified on November 15, 2026 in the ScamSathi repository.
 
-- `javac --add-modules jdk.httpserver -encoding UTF-8 -d build src\ScamSathiServer.java` — passed.
-- `cmd.exe /c run.bat --no-browser` — compiled and started the Java server on `127.0.0.1:18878`.
-- `GET /` — HTTP 200; checker page returned.
-- `GET /styles.css` and `GET /app.js` — HTTP 200.
-- `GET /api/health` — returned `status: ok` and engine name.
-- Synthetic KYC/OTP threat with a suspicious bank-lookalike URL — high-risk signals returned, including credential request and brand mismatch.
-- Synthetic UPI refund/QR/PIN message — payment-direction and credential signals returned.
-- Synthetic remote-access request — remote-access signal returned.
-- Benign receipt message — score 0 and no warning signals.
-- Empty API input — HTTP 400.
-- 4,001-character message — HTTP 413.
-- `node --check web/app.js` — passed.
+- `npm test` — **11 passed, 0 failed**: ten rule tests and one Java API/static-serving smoke test.
+- Java 17 compile — passed as part of the API smoke test.
+- API smoke coverage — health route, root page, security headers, no CORS allowance, QR page, local worker MIME, synthetic KYC/URL result, UPI QR result, empty input, and oversized message/QR inputs.
+- Manual browser review — synthetic English and Hindi OTP/urgency messages returned explanations and safe next steps; pasted synthetic UPI QR displayed the payment signal and unverified payee, name, and amount. The UI did not open a URL or initiate payment.
+- Presentation — 10 slides; Artifact Tool import, package integrity, slide geometry, and font-policy validation passed with no layout findings or warnings. Slides were rendered and reviewed individually; flow and architecture connector direction was corrected during review.
+- Source hygiene — `git diff --check` passed; focused credential-pattern scan found no matches.
 
-The mobile layout was not separately inspected in a mobile browser. These checks confirm app and API behavior using the current synthetic examples; they do not establish real-world scam-detection accuracy.
+## Not tested or not established
+
+- Camera permission, live camera stream, camera switching, flashlight, and device cleanup on physical hardware.
+- QR image decode with an automated image fixture.
+- Accuracy, precision/recall, or any ML/audio metrics.
+- Full mobile/browser matrix, formal screen-reader audit, and native-speaker translation review.
+- GitHub Pages deployment until the Actions run and public URL are verified.
+
+These checks cover expected behavior for the listed synthetic cases; they do not establish real-world fraud-detection accuracy or production security.
