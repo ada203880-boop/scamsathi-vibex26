@@ -60,4 +60,5 @@ This script is designed to show the working local app, two useful scam scenarios
 - The video is 2–3 minutes, readable, and has clear narration or captions.
 - Only synthetic text and fake URLs appear; no private notifications or account information are visible.
 - The saved file plays from start to finish and is named `ScamSathi-Demo.mp4`.
+- In the event form, disclose the pre-event code, all AI tools used, and third-party resources accurately. The project files predate the listed event start; confirm eligibility with the organizers.
 - Follow the event form's current rules for video size, format, and upload location.

@@ -1,6 +1,6 @@
 # ScamSathi — VibeX Codes 26
 
-ScamSathi is a local-first cyber-safety demo for people and small businesses. It checks a pasted message, call transcript, and optional URL for explainable warning signs, then shows safer next steps. It is designed for VibeX Codes Track 3.
+ScamSathi is a local-first cyber-safety prototype for people and small businesses. It checks a pasted message or call transcript and an optional URL for explainable warning signs, then shows safer next steps. It is designed for VibeX Codes Track 3. Repository: https://github.com/ada203880-boop/scamsathi-vibex26
 
 ## Run on Windows
 
@@ -39,9 +39,16 @@ The server binds to `127.0.0.1`, does not retain or log submitted message conten
 
 If money has been lost, contact the bank immediately. The Government of India's official cybercrime portal lists 1930 for financial cyber fraud reporting: <https://cybercrime.gov.in/>.
 
+## Development and AI disclosure
+
+This ScamSathi code was prepared before the VibeX Codes 26 event start listed for November 15, 2026, at 9:00 AM IST. The event page says projects should be built during the event and asks participants to disclose pre-existing code. Do not describe this repository as built entirely during the event; check with the organizers whether this pre-event prototype is eligible and disclose its timing accurately.
+
+OpenAI Codex assisted with code review, verification, and submission-document updates. List any other AI tools used to create or modify the source code in the event submission. The Java server uses the JDK's built-in `HttpServer` and the web app has no third-party JavaScript dependencies. Disclose any other third-party resources or assets your team added.
+
 ## Submission checklist
 
-- Publish this project folder to a public GitHub or GitLab repository and add the real URL to slide 8 and the event form.
-- Test the app on the presentation laptop.
-- Record the optional 2–3 minute demo if time permits.
-- Verify the event submission deadline and duration on the official event page.
+- The judging guide requires an 8–10 slide deck and a working code link. The current deck has 8 slides.
+- The [Unstop event page](https://api.unstop.com/hackathons/vibex-codes-26-globalyogacourse-1766232) asks for a short description, repository or project link, and a demo or screenshots. A 2–3 minute video is optional under the judging guide and can earn up to 15 bonus points.
+- Use [`presentation/ScamSathi-VibeX-Codes-26-Repository-Linked.pptx`](presentation/ScamSathi-VibeX-Codes-26-Repository-Linked.pptx), which already has the repository URL on slide 8, and provide that URL in the event form.
+- Disclose pre-event code, all AI tools used, and third-party resources accurately. Confirm eligibility with the organizers because this prototype predates the listed build window.
+- Verify the app opens on the presentation device and use synthetic demo examples only.
