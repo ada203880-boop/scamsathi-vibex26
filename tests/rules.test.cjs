@@ -7,6 +7,7 @@ test('neutral text does not trigger a known warning rule', () => {
   assert.equal(result.level, 'low');
   assert.equal(result.score, 0);
   assert.deepEqual(result.signals, []);
+  assert.equal(result.attackChain.count, 0);
 });
 
 test('educational OTP warning is not mistaken for a request', () => {
@@ -32,8 +33,15 @@ test('fake KYC example explains credential, pressure, and suspicious URL signals
   assert.ok(ids.includes('secret'));
   assert.ok(ids.includes('pressure'));
   assert.ok(ids.includes('brand_mismatch'));
+  assert.equal(result.attackChain.count, 3);
   assert.equal(result.level, 'critical');
   assert.ok(result.actions.some(action => action.includes('Do not open')));
+});
+
+test('attack-chain map explains linked pressure without claiming a verdict', () => {
+  const result = rules.analyze('Your account will be suspended today. Click here to verify now.', '');
+  assert.equal(result.attackChain.count, 2);
+  assert.deepEqual(result.attackChain.stages.map(stage => stage.matched), [true, true, false]);
 });
 
 test('UPI collect instructions are described as an outgoing-payment risk', () => {

@@ -1,0 +1,22 @@
+{
+  "id": "./",
+  "name": "ScamSathi Guard — Share to Check",
+  "short_name": "ScamSathi",
+  "description": "Share a suspicious message for a private, on-device safety check.",
+  "lang": "en-IN",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f8f4",
+  "theme_color": "#f6f8f4",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "share_target": {
+    "action": "./share-target/",
+    "method": "POST",
+    "enctype": "application/x-www-form-urlencoded",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}

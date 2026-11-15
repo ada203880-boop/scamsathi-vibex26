@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#f6f8f4">
   <meta name="description" content="ScamSathi explains warning signs in suspicious messages, links and QR codes. Check before you share a code or approve a payment.">
   <title>ScamSathi — Pause. Check. Protect.</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
   <script src="rules.js" defer></script>
   <script src="app.js" defer></script>
@@ -53,6 +55,20 @@
       </div>
     </section>
 
+    <section class="share-bridge" aria-labelledby="share-bridge-title">
+      <div class="share-bridge-copy">
+        <span class="share-label">ANDROID SHARE-TO-SHIELD</span>
+        <h2 id="share-bridge-title">Skip copy and paste.</h2>
+        <p>Open this page in Android Chrome, wait for the green ready badge, then install ScamSathi. When a suspicious message arrives, tap <b>Share → ScamSathi</b> for an on-device check and a map of the pressure tactics.</p>
+        <span class="share-status" id="shareReady" role="status">Preparing the private share receiver…</span>
+      </div>
+      <ol class="share-steps">
+        <li><span>01</span><b>Message arrives</b></li>
+        <li><span>02</span><b>Share to ScamSathi</b></li>
+        <li><span>03</span><b>Pause before acting</b></li>
+      </ol>
+    </section>
+
     <section class="session" aria-labelledby="session-title">
       <div class="session-heading">
         <div><div class="kicker" data-i18n="session-kicker">THIS BROWSER TAB</div><h2 id="session-title" data-i18n="session-title">Your checks</h2></div>
@@ -95,6 +111,11 @@
       <article class="result" id="messageResult" data-result hidden aria-live="polite">
         <div class="result-head"><div><div class="kicker" data-i18n="result-kicker">YOUR CHECK RESULTS</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
         <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
+        <section class="chain-map" data-attack-chain hidden aria-label="Possible social engineering sequence">
+          <div class="chain-heading"><div><span class="chain-kicker"></span><h3 class="chain-title"></h3><p class="chain-summary"></p></div><span class="chain-count"></span></div>
+          <ol class="chain-stages"></ol>
+          <p class="chain-note"></p>
+        </section>
         <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
         <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
       </article>
