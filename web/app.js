@@ -232,6 +232,10 @@
   }
 
   async function postToLocalApi(path, fields) {
+    const host = window.location.hostname.toLowerCase();
+    // GitHub Pages is static; keep submitted content in-browser instead of POSTing it to the host.
+    if (!['127.0.0.1', 'localhost', '::1', '[::1]'].includes(host)) return null;
+
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 700);
     try {
