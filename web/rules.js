@@ -221,7 +221,13 @@
     if (!text && !link) throw new TypeError('Provide a message or link to analyze.');
     const lower = text.toLowerCase();
     const result = { score: 0, level: 'low', title: '', summary: '', signals: [], actions: [], hasUrl: Boolean(link) };
-    const education = /(?:never|don't|do not|avoid|beware)\s+(?:share|tell|send|give).{0,24}(?:otp|pin|password|cvv)|(?:otp|pin|password|cvv).{0,24}(?:never|don't|do not)\s+(?:share|tell|send|give)/iu.test(lower);
+    const routineOtpNotice = /\b(?:(?:otp|verification code)\s*(?:is|:)\s*\d{4,8}|\d{4,8}\s+(?:is\s+)?(?:your\s+)?(?:login\s+)?(?:otp|verification code|one[ -]?time code))\b[\s\S]{0,120}\b(?:do not|don't|never)\s+share\b/iu.test(lower);
+    const directRequestPattern = /\b(?:send|share|tell|give|provide|enter|reply with)[^.!?;]{0,30}\b(?:otp|one[ -]?time (?:password|code)|verification code|pin|password|cvv)\b|\b(?:send|share|tell|give|provide|reply with)\s+(?:it|the code)\s+(?:to|with)\s+(?:me|us|our agent|the agent|support|team)\b/giu;
+    const directSecretRequest = Array.from(lower.matchAll(directRequestPattern)).some(match =>
+      !/(?:never|don't|do not|not|avoid|beware)\s*$/iu.test(lower.slice(Math.max(0, match.index - 16), match.index))
+    );
+    const educationalPattern = /(?:never|don't|do not|avoid|beware)\s+(?:share|tell|send|give).{0,30}(?:otp|one[ -]?time (?:password|code)|verification code|pin|password|cvv|(?:this|the)?\s*code|it)|(?:otp|one[ -]?time (?:password|code)|verification code|pin|password|cvv|(?:this|the)?\s*code|it).{0,30}(?:never|don't|do not)\s+(?:share|tell|send|give)/iu.test(lower);
+    const education = (educationalPattern || routineOtpNotice) && !directSecretRequest;
     if (!education && /\b(otp|one[ -]?time password|verification code|cvv|card pin|upi pin|atm pin|password|passcode)\b|ओटीपी|पासवर्ड|पिन बताएं/iu.test(lower)) add(result, 'secret');
     if (/(receive|get|claim|unlock|release).{0,35}(money|refund|reward|cashback|prize|payment)|pay.{0,30}(to receive|to claim|for refund)|पैसे.{0,25}(पाने|प्राप्त)|रिफंड.{0,20}(लेने|पाने)|शुल्क.{0,15}(जमा|भुगतान)|जमा.{0,10}शुल्क/iu.test(lower)) add(result, 'receive_fee');
     if (/\b(anydesk|teamviewer|quick.?support|remote access|screen share|install this app|download.*apk)\b|स्क्रीन शेयर|ऐप इंस्टॉल/iu.test(lower)) add(result, 'remote_access');

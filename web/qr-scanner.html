@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="paper">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f8f4">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6f4ed">
   <meta name="description" content="Decode and inspect QR codes without opening links or initiating payments.">
   <title>ScamSathi — QR safety scanner</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -19,8 +20,9 @@
       <span class="logo" aria-hidden="true">S</span>
       <span>ScamSathi<small data-i18n="brand-tag">COMMUNITY CYBER SAFETY</small></span>
     </a>
-    <nav aria-label="Main navigation"><a href="index.html#check" data-i18n="nav-check">Check a message</a><a href="index.html#learn" data-i18n="nav-learn">Learn the signs</a></nav>
-    <div class="header-right"><span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Private checks</span></span><label class="sr-only" for="languageSelect" data-i18n="language-label">Language</label><select class="lang" id="languageSelect" aria-label="Choose language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="or">ଓଡ଼ିଆ</option></select></div>
+    <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-expanded="false" aria-controls="mainNav">Menu</button>
+    <nav id="mainNav" aria-label="Main navigation"><a href="index.html#check" data-i18n="nav-check">Check a message</a><a href="index.html#learn" data-i18n="nav-learn">Learn the signs</a></nav>
+    <div class="header-right"><span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Private checks</span></span><label class="sr-only" for="languageSelect" data-i18n="language-label">Language</label><select class="lang" id="languageSelect" aria-label="Choose language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="or">ଓଡ଼ିଆ</option></select><button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Midnight Archive</button></div>
   </header>
 
   <main class="scanner-main">

@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="paper">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f8f4">
-  <meta name="description" content="ScamSathi explains warning signs in suspicious messages, links and QR codes. Check before you share a code or approve a payment.">
-  <title>ScamSathi — Pause. Check. Protect.</title>
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6f4ed">
+  <meta name="description" content="ScamSathi 2.0 — Cybersecurity Intelligence Dashboard for explainable scam detection, SMS/URL analysis, fraud relationship mapping, and campaign intelligence.">
+  <title>ScamSathi 2.0 — Cybersecurity Intelligence Dashboard</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <link rel="stylesheet" href="styles.css">
@@ -13,154 +14,699 @@
   <script src="app.js" defer></script>
 </head>
 <body>
+  <!-- Top Command Header -->
   <header class="top" id="top">
     <a class="brand" href="#top" aria-label="ScamSathi home">
       <span class="logo" aria-hidden="true">S</span>
-      <span>ScamSathi<small data-i18n="brand-tag">COMMUNITY CYBER SAFETY</small></span>
+      <span>ScamSathi 2.0<small data-i18n="brand-tag">CYBERSECURITY INTELLIGENCE</small></span>
     </a>
-    <nav aria-label="Main navigation">
-      <a href="#check" data-i18n="nav-check">Check a message</a>
-      <a href="qr-scanner.html" data-i18n="nav-qr">Scan a QR</a>
-      <a href="#learn" data-i18n="nav-learn">Learn the signs</a>
+    <button class="mobile-nav-toggle" id="mobileNavToggle" type="button" aria-expanded="false" aria-controls="mainNav">Menu</button>
+    <nav id="mainNav" aria-label="Main navigation">
+      <a href="#check" data-i18n="nav-check">Threat Analysis</a>
+      <a href="#safety-assistant">Safety Assistant</a>
+      <a href="#graph-view" data-i18n="nav-graph">Fraud Graph</a>
+      <a href="#campaigns-view" data-i18n="nav-campaigns">Campaigns</a>
+      <a href="#dossier-view" data-i18n="nav-dossier">Dossier</a>
+      <a href="#telemetry-view" data-i18n="nav-telemetry">Telemetry Log</a>
+      <a href="qr-scanner.html" data-i18n="nav-qr">QR Scanner</a>
+      <a href="#learn" data-i18n="nav-learn">Threat Tactics</a>
     </nav>
     <div class="header-right">
-      <span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Private checks</span></span>
+      <span class="secure"><i aria-hidden="true"></i><span data-i18n="local-label">Sandbox Protected</span></span>
       <label class="sr-only" for="languageSelect" data-i18n="language-label">Language</label>
       <select class="lang" id="languageSelect" aria-label="Choose language">
         <option value="en">English</option>
         <option value="hi">हिन्दी</option>
         <option value="or">ଓଡ଼ିଆ</option>
       </select>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false">Midnight Archive</button>
     </div>
   </header>
 
+  <!-- Dashboard HUD Screen Switcher Navigation Bar -->
+  <div class="dashboard-hud-bar" role="navigation" aria-label="Intelligence Dashboard Screens">
+    <div class="screen-tabs-nav" id="screenTabsNav">
+      <button class="screen-tab-btn is-active" type="button" data-screen-target="screen-1"><span class="tab-num">01</span> Analyze Threat</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-2"><span class="tab-num">02</span> Threat Verdict</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-3"><span class="tab-num">03</span> Attack Chain Map</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-4"><span class="tab-num">04</span> Evidence & Playbook</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-5"><span class="tab-num">05</span> Fraud Graph</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-6"><span class="tab-num">06</span> Scam patterns <span class="campaign-demo-tag">SYNTHETIC</span></button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-7"><span class="tab-num">07</span> Incident Dossier</button>
+      <button class="screen-tab-btn" type="button" data-screen-target="screen-8"><span class="tab-num">08</span> Telemetry Log</button>
+    </div>
+  </div>
+
   <main>
-    <section class="hero">
+    <!-- Screen 1: Hero & Command Overview -->
+    <section class="hero" id="hero-overview">
       <div class="hero-copy">
-        <div class="kicker"><span>TRACK 3</span><span data-i18n="track-label">CYBER SAFETY</span></div>
-        <h1><span data-i18n="hero-line-1">Pause.</span><br><em><span data-i18n="hero-line-2">Check.</span></em><br><span data-i18n="hero-line-3">Protect.</span></h1>
-        <p class="intro" data-i18n="hero-intro">Check the warning signs in a suspicious message, link or QR code before you act.</p>
-        <a class="cta" href="#check"><span data-i18n="hero-cta">Check a message</span><span aria-hidden="true">↓</span></a>
+        <div class="kicker"><span>TRACK 3</span><span data-i18n="track-label">CYBER DEFENSE INTELLIGENCE</span></div>
+        <h1><span data-i18n="hero-line-1">Intercept.</span><br><em><span data-i18n="hero-line-2">Analyze.</span></em><br><span data-i18n="hero-line-3">Neutralize.</span></h1>
+        <p class="intro" data-i18n="hero-intro">Next-generation cybersecurity intelligence platform for explainable scam detection, SMS/URL payload analysis, and fraud relationship visualization.</p>
+        <div class="hero-actions">
+          <a class="cta" href="#check"><span data-i18n="hero-cta">Inspect Threat Vector</span><span aria-hidden="true">↓</span></a>
+          <a class="cta-secondary" href="#graph-view">Explore Fraud Graph ↗</a>
+        </div>
         <div class="hero-note">
           <span class="lock" aria-hidden="true">⌑</span>
-          <span><b data-i18n="hero-privacy-title">Your content stays in this browser</b><small data-i18n="hero-privacy-copy">Rules check the text; messages are not saved.</small></span>
+          <span><b data-i18n="hero-privacy-title">Local-First Checks &amp; Optional History</b><small data-i18n="hero-privacy-copy">Checks run locally by default and content is not saved unless you opt in to history. Optional Gemini processing requires your explicit consent.</small></span>
         </div>
       </div>
       <div class="hero-art" aria-hidden="true">
         <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-        <div class="shield"><span>✓</span></div>
-        <div class="art-tag tag-top"><b>01</b><span data-i18n="hero-art-1">CHECK THE SIGNS</span></div>
-        <div class="art-tag tag-bottom"><b>02</b><span data-i18n="hero-art-2">CHOOSE A SAFE NEXT STEP</span></div>
+        <div class="radar-sweep-cone"></div>
+        <div class="shield"><span>🛡</span></div>
+        <div class="art-tag tag-top"><b>01</b><span data-i18n="hero-art-1">EXPLAINABLE CUES</span></div>
+        <div class="art-tag tag-bottom"><b>02</b><span data-i18n="hero-art-2">DEFENSE PLAYBOOK</span></div>
         <div class="spark spark-a">✳</div><div class="spark spark-b">✳</div>
       </div>
     </section>
 
+    <!-- Android Share-to-Shield Bridge -->
     <section class="share-bridge" aria-labelledby="share-bridge-title">
       <div class="share-bridge-copy">
-        <span class="share-label">ANDROID SHARE-TO-SHIELD</span>
-        <h2 id="share-bridge-title">Skip copy and paste.</h2>
-        <p>Open this page in Android Chrome, wait for the green ready badge, then install ScamSathi. When a suspicious message arrives, tap <b>Share → ScamSathi</b> for an on-device check and a map of the pressure tactics.</p>
-        <span class="share-status" id="shareReady" role="status">Preparing the private share receiver…</span>
+        <span class="share-label">ANDROID WEB SHARE TARGET</span>
+        <h2 id="share-bridge-title">One-Tap Security Check</h2>
+        <p>Install ScamSathi as a PWA. When a suspicious SMS, WhatsApp message, or UPI link arrives, tap <b>Share → ScamSathi</b> for instant on-device risk assessment.</p>
+        <span class="share-status" id="shareReady" role="status">Initializing private sandbox share receiver…</span>
       </div>
       <ol class="share-steps">
-        <li><span>01</span><b>Message arrives</b></li>
+        <li><span>01</span><b>Suspicious Text Arrives</b></li>
         <li><span>02</span><b>Share to ScamSathi</b></li>
-        <li><span>03</span><b>Pause before acting</b></li>
+        <li><span>03</span><b>Instant Threat Verdict</b></li>
       </ol>
     </section>
 
-    <section class="session" aria-labelledby="session-title">
+    <!-- Session Telemetry KPI Strip -->
+    <section class="session" id="telemetry-strip" aria-labelledby="session-title">
       <div class="session-heading">
-        <div><div class="kicker" data-i18n="session-kicker">THIS BROWSER TAB</div><h2 id="session-title" data-i18n="session-title">Your checks</h2></div>
-        <p data-i18n="session-note">Counts reset when this tab closes. No message text is kept.</p>
+        <div>
+          <div class="kicker" data-i18n="session-kicker">SESSION TELEMETRY</div>
+          <h2 id="session-title" data-i18n="session-title">Live Inspection Metrics</h2>
+        </div>
+        <p data-i18n="session-note">Metrics maintained in browser sandbox session memory.</p>
       </div>
       <div class="session-grid">
-        <article class="session-metric"><span data-i18n="metric-checks">CHECKS</span><strong id="metricChecks">0</strong><small data-i18n="metric-checks-note">Completed in this tab</small></article>
-        <article class="session-metric"><span data-i18n="metric-warnings">CHECKS WITH WARNING SIGNS</span><strong id="metricWarnings">0</strong><small data-i18n="metric-warnings-note">A warning is not a verdict</small></article>
-        <article class="session-metric"><span data-i18n="metric-qr">QR CHECKS</span><strong id="metricQr">0</strong><small data-i18n="metric-qr-note">Camera, image or pasted text</small></article>
-        <article class="session-recent"><span data-i18n="recent-title">RECENT ACTIVITY</span><p id="recentActivity" data-i18n="recent-empty">Nothing yet. Run a check to see activity for this tab.</p></article>
+        <article class="session-metric">
+          <span data-i18n="metric-checks">SCANS COMPLETED</span>
+          <strong id="metricChecks">0</strong>
+          <small data-i18n="metric-checks-note">Evaluated in this session</small>
+        </article>
+        <article class="session-metric">
+          <span data-i18n="metric-warnings">CRITICAL / HIGH THREATS</span>
+          <strong id="metricWarnings" style="color: var(--crimson-alert);">0</strong>
+          <small data-i18n="metric-warnings-note">Urgent warning signals</small>
+        </article>
+        <article class="session-metric">
+          <span data-i18n="metric-qr">QR / PAYMENT CHECKS</span>
+          <strong id="metricQr" style="color: var(--violet-primary);">0</strong>
+          <small data-i18n="metric-qr-note">UPI and visual payloads</small>
+        </article>
+        <article class="session-recent">
+          <span data-i18n="recent-title">RECENT THREAT LOG</span>
+          <div id="recentActivity" class="recent-list">
+            <p data-i18n="recent-empty">No checks recorded yet. Run an analysis below.</p>
+          </div>
+        </article>
       </div>
     </section>
 
+    <!-- SCREEN 1: SCAM ANALYSIS INPUT CONSOLE -->
     <section class="checker" id="check" aria-labelledby="checker-title">
       <div class="section-intro">
-        <div><div class="kicker" data-i18n="checker-kicker">MESSAGE AND LINK CHECK</div><h2 id="checker-title" data-i18n="checker-title">What did they send you?</h2><p data-i18n="checker-help">Paste a message or call transcript. Add a link separately if there is one.</p></div>
-        <span class="step">01 <i>/</i> 03</span>
+        <div>
+          <div class="kicker" data-i18n="checker-kicker">SCREEN 01 · THREAT INGESTION</div>
+          <h2 id="checker-title" data-i18n="checker-title">Inspect Suspicious Payload</h2>
+          <p data-i18n="checker-help">Start here: paste suspicious text, add a link if present, then analyze. Leave passwords, OTPs, PINs, and full card details out.</p>
+        </div>
+        <span class="step">01 <i>/</i> 08</span>
       </div>
+
       <div class="check-grid">
         <div class="input-panel">
-          <label for="message"><span data-i18n="message-label">MESSAGE OR CALL TRANSCRIPT</span><span data-i18n="message-limit">up to 4,000 characters</span></label>
-          <textarea id="message" maxlength="4000" placeholder="Example: Your bank account will be blocked. Share your OTP now…" aria-describedby="charCount"></textarea>
-          <div class="input-foot"><span id="charCount">0 / 4,000</span><button class="example" id="exampleBtn" type="button" data-i18n="try-example">Try a sample message ↗</button></div>
-          <label class="url-label" for="url"><span data-i18n="url-label">LINK IN THE MESSAGE</span><span data-i18n="url-note">optional · checked without opening it</span></label>
-          <div class="url-wrap"><span aria-hidden="true">↗</span><input type="text" id="url" maxlength="2048" placeholder="Paste a link or domain here" data-i18n-placeholder="url-placeholder" autocomplete="off" spellcheck="false"></div>
-          <div class="input-actions"><button class="analyze" id="analyzeBtn" type="button"><span data-i18n="analyze-button">Analyze warning signs</span><span aria-hidden="true">→</span></button><span class="micro" data-i18n="input-local-note">Checked in this browser or by the local Java service.</span></div>
+          <!-- Pre-loaded threat vectors -->
+          <div class="threat-vectors-selector">
+            <div class="threat-vectors-title"><span>⚡</span> Quick Sample Threat Vectors:</div>
+            <div class="threat-vector-chips">
+              <button class="threat-chip" type="button" data-sample="kyc">Bank KYC Expiry Lure (SBI)</button>
+              <button class="threat-chip" type="button" data-sample="electricity">Electricity Bill Power-Cut Alert</button>
+              <button class="threat-chip" type="button" data-sample="upi">UPI Collect Reverse Refund</button>
+              <button class="threat-chip" type="button" data-sample="neutral">Legitimate Bank Warning (Clean)</button>
+            </div>
+          </div>
+
+          <label for="message">
+            <span data-i18n="message-label">MESSAGE OR CALL TRANSCRIPT</span>
+            <span data-i18n="message-limit">up to 4,000 characters</span>
+          </label>
+          <textarea id="message" maxlength="4000" placeholder="Example: Your bank account will be blocked in 2 hours. Share your OTP now…" aria-describedby="charCount"></textarea>
+
+          <div class="input-foot">
+            <span id="charCount">0 / 4,000</span>
+            <button class="example" id="exampleBtn" type="button" data-i18n="try-example">Cycle sample message ↗</button>
+          </div>
+
+          <label class="url-label" for="url">
+            <span data-i18n="url-label">SUSPICIOUS URL OR EMBEDDED LINK</span>
+            <span data-i18n="url-note">checked as text only; the URL is not opened</span>
+          </label>
+          <div class="url-wrap">
+            <span aria-hidden="true">↗</span>
+          <input type="text" id="url" maxlength="2048" placeholder="Paste link or domain (e.g., https://bank.example/login)" data-i18n-placeholder="url-placeholder" autocomplete="off" spellcheck="false">
+          </div>
+
+          <div class="input-actions">
+            <button class="analyze" id="analyzeBtn" type="button">
+              <span data-i18n="analyze-button">Analyze Threat Vectors</span>
+              <span aria-hidden="true">→</span>
+            </button>
+            <button class="clear-btn" id="clearBtn" type="button">Clear Inputs</button>
+            <span class="micro" data-i18n="input-local-note">Evaluated in-browser and verified by local Java service if running.</span>
+          </div>
+          <div class="voice-entry" aria-labelledby="voice-title">
+            <div class="voice-entry-heading">
+              <strong id="voice-title">Optional voice input</strong>
+              <button class="graph-btn" id="startVoiceBtn" type="button">Start dictation</button>
+            </div>
+            <p>Your browser's speech recognition provider may receive and process audio for transcription. ScamSathi does not directly upload or store audio. Review and edit the transcript before using it.</p>
+            <label class="consent-row"><input id="voiceConsent" type="checkbox"> I consent to sending audio to my browser's speech recognition provider for this dictation.</label>
+            <label class="sr-only" for="voiceTranscript">Voice transcription (editable)</label>
+            <textarea id="voiceTranscript" rows="3" maxlength="4000" placeholder="Your editable transcript will appear here…" hidden></textarea>
+            <div class="voice-transcript-actions" id="voiceTranscriptActions" hidden>
+              <span id="voiceStatus" role="status">Transcript ready to review.</span>
+              <button class="graph-btn" id="useVoiceTranscriptBtn" type="button">Use this transcript</button>
+            </div>
+            <span class="micro" id="voiceSupportNote" role="status">Manual text entry is always available.</span>
+          </div>
           <div class="error" id="error" role="alert" hidden></div>
         </div>
+
         <aside class="side-panel">
-          <div class="side-badge" data-i18n="before-act">BEFORE YOU ACT</div>
-          <h3 data-i18n="three-rules">Three things to remember</h3>
+          <div class="side-badge" data-i18n="before-act">TACTICAL PROTOCOLS</div>
+          <h3 data-i18n="three-rules">Golden Rules of Cyber Defense</h3>
           <ul>
-            <li><span>01</span><div><b data-i18n="rule-otp-title">Never share an OTP or PIN</b><small data-i18n="rule-otp-copy">Not even with someone claiming to be from your bank.</small></div></li>
-            <li><span>02</span><div><b data-i18n="rule-upi-title">You do not pay to receive money</b><small data-i18n="rule-upi-copy">A UPI PIN authorizes money going out.</small></div></li>
-            <li><span>03</span><div><b data-i18n="rule-pressure-title">Pause if someone pressures you</b><small data-i18n="rule-pressure-copy">Call the organization on a number you find yourself.</small></div></li>
+            <li>
+              <span>01</span>
+              <div>
+                <b data-i18n="rule-otp-title">Never disclose OTP or PIN</b>
+                <small data-i18n="rule-otp-copy">Official bank personnel will NEVER request an OTP, PIN, or CVV.</small>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <b data-i18n="rule-upi-title">Receiving money never requires a PIN</b>
+                <small data-i18n="rule-upi-copy">A UPI PIN strictly authorizes funds leaving your bank account.</small>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <b data-i18n="rule-pressure-title">Artificial urgency is a red flag</b>
+                <small data-i18n="rule-pressure-copy">Scammers fabricate panic to prevent calm verification. Pause and verify.</small>
+              </div>
+            </li>
           </ul>
-          <a class="report-link" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="report-link">Official cybercrime reporting portal ↗</a>
+          <a class="report-link" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="report-link">Official Indian Cybercrime Portal (cybercrime.gov.in) ↗</a>
         </aside>
       </div>
+
+      <!-- SCREEN 2: ANALYSIS RESULTS & THREAT VERDICT -->
       <article class="result" id="messageResult" data-result hidden aria-live="polite">
-        <div class="result-head"><div><div class="kicker" data-i18n="result-kicker">YOUR CHECK RESULTS</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
-        <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
-        <section class="chain-map" data-attack-chain hidden aria-label="Possible social engineering sequence">
-          <div class="chain-heading"><div><span class="chain-kicker"></span><h3 class="chain-title"></h3><p class="chain-summary"></p></div><span class="chain-count"></span></div>
+        <div class="result-head">
+          <div>
+            <div class="kicker" data-i18n="result-kicker">SCREEN 02 · THREAT VERDICT</div>
+            <h2 data-result-title>Analysis Complete</h2>
+            <p data-result-summary></p>
+            <div class="verdict-tag-bar">
+              <span class="verdict-tag" id="verdictCategoryTag">CREDENTIAL PHISHING DETECTED</span>
+              <span class="verdict-tag" id="analysisSourceTag" data-analysis-source style="background: var(--blue-soft); color: var(--blue-primary); border: 1px solid var(--line-bright);">DETERMINISTIC RULES</span>
+            </div>
+          </div>
+          <div class="score-badge" data-score-badge>
+            <strong data-result-score>0</strong>
+            <small data-i18n="score-label">SIGNAL SCORE</small>
+          </div>
+        </div>
+        <div class="score-note" data-i18n="score-note">Deterministic threat weight points · 0 = Clean Baseline, 100 = Maximum Attack Indicators</div>
+
+        <!-- SCREEN 3: EXPLAINABLE ATTACK-CHAIN SEQUENCE MAP -->
+        <section class="chain-map" data-attack-chain hidden aria-label="Social engineering attack progression">
+          <div class="chain-heading">
+            <div>
+              <span class="chain-kicker">SCREEN 03 · EXPLAINABLE ATTACK-CHAIN MAP</span>
+              <h3 class="chain-title">Attack Progression Mapping</h3>
+              <p class="chain-summary"></p>
+            </div>
+            <span class="chain-count"></span>
+          </div>
           <ol class="chain-stages"></ol>
           <p class="chain-note"></p>
         </section>
-        <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
-        <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
+
+        <section class="evidence-explainer" data-evidence-panel aria-labelledby="evidence-title">
+          <div class="evidence-heading">
+            <div>
+              <span class="chain-kicker">OBSERVED CONTENT · RULE INTERPRETATION</span>
+              <h3 id="evidence-title">Evidence and explanation</h3>
+              <p>Observed phrases and extracted items are shown separately from rule interpretations. A match is not proof of malicious intent.</p>
+            </div>
+            <span class="confidence-note" data-confidence-summary>Confidence is not a probability.</span>
+          </div>
+          <label class="sr-only" for="evidenceSearch">Search evidence</label>
+          <input class="evidence-search" id="evidenceSearch" data-evidence-search type="search" placeholder="Search evidence or signal…" autocomplete="off">
+          <div class="evidence-source-preview" data-evidence-preview aria-live="polite"></div>
+          <div class="evidence-items" data-evidence-items></div>
+        </section>
+
+        <!-- SCREEN 4: EVIDENCE BREAKDOWN & DEFENSIVE PLAYBOOK -->
+        <div class="result-columns">
+          <div>
+            <h3 data-i18n="signals-title">
+              <span>🔍</span> Screen 04 · Evidence Breakdown
+            </h3>
+            <div data-result-signals class="signals"></div>
+          </div>
+          <div>
+            <h3 data-i18n="actions-title">
+              <span>🛡</span> Defensive Containment Playbook
+            </h3>
+            <ol data-result-actions class="actions"></ol>
+          </div>
+        </div>
+
+        <div class="result-bottom">
+          <span data-result-disclaimer></span>
+          <button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy Incident Summary</button>
+        </div>
       </article>
     </section>
 
+    <section class="safety-section" id="safety-assistant" aria-labelledby="safety-title">
+      <div class="section-intro">
+        <div>
+          <div class="kicker">PRACTICAL RESPONSE · INDIA</div>
+          <h2 id="safety-title">What happened to you?</h2>
+          <p>Choose the closest situation for immediate next steps. ScamSathi will not ask for your password, OTP, PIN, or full card details.</p>
+        </div>
+      </div>
+      <div class="safety-layout">
+        <div class="safety-scenarios" role="group" aria-label="Choose what happened">
+          <button type="button" data-safety-scenario="clicked">I clicked a suspicious link</button>
+          <button type="button" data-safety-scenario="otp">I shared an OTP</button>
+          <button type="button" data-safety-scenario="credentials">I shared banking credentials</button>
+          <button type="button" data-safety-scenario="transfer">I transferred money</button>
+          <button type="button" data-safety-scenario="app">I installed an unknown app</button>
+          <button type="button" data-safety-scenario="qr">I scanned a suspicious QR code</button>
+          <button type="button" data-safety-scenario="received">I only received a suspicious message</button>
+        </div>
+        <article class="safety-guidance" aria-live="polite">
+          <h3 data-safety-title>Select a situation</h3>
+          <ol data-safety-steps><li>Choose an option to see practical steps.</li></ol>
+          <div class="safety-resources">
+            <strong>Official resources for India</strong>
+            <a href="tel:1930">Call 1930 for financial cyber fraud reporting</a>
+            <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer">National Cyber Crime Reporting Portal ↗</a>
+            <a href="https://www.rbi.org.in/commonman/english/Scripts/SMSLimitedliability.aspx" target="_blank" rel="noopener noreferrer">RBI guidance on unauthorized electronic transactions ↗</a>
+          </div>
+          <p class="safety-limit">Act quickly, especially if money or account access is involved. Reporting does not guarantee recovery.</p>
+          <button class="analyze" id="createIncidentReportBtn" type="button" disabled>Create incident report</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: FRAUD RELATIONSHIP GRAPH VISUALIZATION -->
+    <section class="graph-section" id="graph-view" aria-labelledby="graph-section-title">
+      <div class="section-intro">
+        <div>
+          <div class="kicker">SCREEN 05 · NETWORK INTELLIGENCE</div>
+          <h2 id="graph-section-title">Fraud Relationship Graph</h2>
+          <p>Only entities and relationships returned by this analysis are shown. A shared message does not prove that two entities are controlled by the same person.</p>
+        </div>
+        <span class="step">05 <i>/</i> 08</span>
+      </div>
+
+      <div class="graph-container-card">
+        <div class="graph-hud-header">
+          <div class="graph-hud-title">
+            <span>🕸</span>
+            <h3>Attack Infrastructure Topology</h3>
+          </div>
+          <div class="graph-hud-controls">
+            <button class="graph-btn" id="graphResetBtn" type="button">Reset View</button>
+            <button class="graph-btn" id="graphPulseBtn" type="button">Toggle Data Pulse</button>
+            <button class="graph-btn" id="graphSampleBtn" type="button">Load synthetic example</button>
+          </div>
+        </div>
+
+        <div class="graph-viewport" id="graphViewport" aria-label="Interactive Fraud Relationship Network">
+          <svg class="graph-svg" id="fraudGraphSvg" viewBox="0 0 900 440" preserveAspectRatio="xMidYMid meet" aria-label="Entities and returned relationships"></svg>
+          <div class="graph-empty-state" id="graphEmptyState">Run an analysis to inspect extracted entities. No threat or attribution data is loaded automatically.</div>
+          <div class="graph-node-tooltip" id="graphNodeTooltip" hidden>
+            <div style="font-size: 24px;" id="tooltipIcon">🔍</div>
+            <div>
+              <strong id="tooltipTitle" style="display:block; font-size:13px; color:var(--text-main);">Entity</strong>
+              <small id="tooltipDesc" style="display:block; font-size:11px; color:var(--text-muted);">Details</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="graph-evidence-panel" id="graphEvidencePanel" aria-live="polite">
+          <strong>Selected entity or relationship</strong>
+          <p id="graphEvidenceText">Select a graph item to inspect its source and evidence references.</p>
+        </div>
+
+        <div class="graph-legend">
+          <div class="legend-item"><span class="legend-dot" style="background: var(--blue-primary);"></span> Extracted entity</div>
+          <div class="legend-item"><span class="legend-dot" style="background: var(--violet-primary);"></span> Returned relationship</div>
+          <div class="legend-item">Relationship provenance is shown on selection. No campaign attribution is inferred.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: SCAM CAMPAIGN MONITORING [DEMO] -->
+    <section class="campaigns-section" id="campaigns-view" aria-labelledby="campaigns-title">
+      <div class="section-intro">
+        <div>
+          <div class="campaign-feed-label"><span>◇</span> SYNTHETIC EXAMPLES · NO LIVE INTELLIGENCE</div>
+          <h2 id="campaigns-title">Common scam patterns</h2>
+          <p>Illustrative scenarios only. No active campaign monitoring, real incident counts, or verified indicators are provided here.</p>
+        </div>
+        <span class="step">06 <i>/</i> 08</span>
+      </div>
+
+      <div class="campaign-filters">
+        <button class="campaign-filter-btn is-active" type="button" data-filter="all">All Sectors (5)</button>
+        <button class="campaign-filter-btn" type="button" data-filter="banking">Banking & KYC</button>
+        <button class="campaign-filter-btn" type="button" data-filter="utilities">Utilities & Energy</button>
+        <button class="campaign-filter-btn" type="button" data-filter="law">Law Enforcement Impersonation</button>
+        <button class="campaign-filter-btn" type="button" data-filter="upi">Marketplace UPI Fraud</button>
+      </div>
+
+      <div class="campaign-grid" id="campaignGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- SCREEN 7: INVESTIGATION REPORT DOSSIER -->
+    <section class="report-section" id="dossier-view" aria-labelledby="dossier-title">
+      <div class="section-intro">
+        <div>
+          <div class="kicker">SCREEN 07 · DEFENSIVE DOSSIER</div>
+          <h2 id="dossier-title">Cyber Incident Investigation Report</h2>
+          <p>Export an analysis summary for your records. This is not an official finding or independently verified forensic report.</p>
+        </div>
+        <span class="step">07 <i>/</i> 08</span>
+      </div>
+
+      <div class="dossier-card">
+        <div class="dossier-header">
+          <div class="dossier-title-block">
+            <span class="dossier-code" id="dossierId">DOSSIER-2026-SCAMSATHI</span>
+            <h3>Security Incident Evidence Dossier</h3>
+            <p style="margin: 0; color: var(--text-muted); font-size: 12px;">User-generated summary; not an official finding</p>
+          </div>
+          <div class="dossier-actions">
+            <button class="dossier-btn" id="exportJsonBtn" type="button"><span>💾</span> Export JSON</button>
+            <button class="dossier-btn" id="exportMdBtn" type="button"><span>📄</span> Export Markdown</button>
+            <button class="dossier-btn" id="printDossierBtn" type="button"><span>🖨</span> Print Dossier</button>
+          </div>
+        </div>
+
+        <div class="dossier-grid">
+          <div class="dossier-block">
+            <h5>Incident Overview</h5>
+            <p id="dossierDate">Timestamp: Initializing...</p>
+            <p id="dossierEngine">Engine: ScamSathi v2.0 Local Deterministic Evaluator</p>
+            <p id="dossierScore">Risk Score: Evaluated upon payload submission</p>
+          </div>
+          <div class="dossier-block">
+            <h5>Targeted Entity & Vector</h5>
+            <p id="dossierImpersonation">Referenced Entity (unverified): Undetermined</p>
+            <p id="dossierVector">Primary Vector: SMS / Embedded Hyperlink</p>
+            <p id="dossierPayloadPreview">Payload: Awaiting analysis</p>
+          </div>
+          <div class="dossier-block">
+            <h5>Threat Classification</h5>
+            <p id="dossierClassification">Classification: Pending Evaluation</p>
+            <p id="dossierSignalsCount">Matched Warning Signals: 0</p>
+            <p id="dossierHash">Verification Hash: Local Sandbox</p>
+          </div>
+        </div>
+
+        <div class="legal-box">
+          <strong>REPORTING IN INDIA:</strong><br>
+          For suspected financial cyber fraud, contact your bank through an official channel and call <b>1930</b> promptly. You can also file a report at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener noreferrer">cybercrime.gov.in</a>. Reporting does not guarantee recovery.
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 8: RECENT REPORTS DASHBOARD (TELEMETRY LOG) -->
+    <section class="telemetry-section" id="telemetry-view" aria-labelledby="telemetry-title">
+      <div class="section-intro">
+        <div>
+          <div class="kicker">SCREEN 08 · INCIDENT AUDIT TRAIL</div>
+          <h2 id="telemetry-title">Recent Inspection Telemetry Log</h2>
+          <p>History is off by default. Without opt-in, submitted message, URL, and QR content stay out of browser storage.</p>
+        </div>
+        <span class="step">08 <i>/</i> 08</span>
+      </div>
+
+      <!-- Opt-In Privacy & Retention Controls -->
+      <div class="telemetry-privacy-box" style="margin-bottom: 16px; padding: 12px 16px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--text-main);">
+          <input type="checkbox" id="optInHistoryCheckbox" style="accent-color: var(--blue-primary); width: 16px; height: 16px;">
+          <span><strong>Enable local investigation history (Opt-In)</strong> <small style="display: block; color: var(--text-muted); font-size: 11px;">When enabled, submitted text, URLs, QR payloads, timestamps and score summaries are stored in this browser profile only. It is not synced, but anyone with this profile can read it. Turning this off deletes saved entries.</small></span>
+        </label>
+        <button class="graph-btn" id="deleteTelemetryBtn" type="button" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4); font-size: 12px; padding: 6px 12px;">
+          Delete Saved History
+        </button>
+      </div>
+
+      <div class="telemetry-toolbar">
+        <div class="telemetry-search">
+          <input type="text" id="telemetrySearchInput" placeholder="Filter by keyword, URL, or level…" autocomplete="off">
+        </div>
+        <div class="telemetry-filter-pills">
+          <button class="campaign-filter-btn is-active" type="button" data-log-filter="all">All Logs</button>
+          <button class="campaign-filter-btn" type="button" data-log-filter="critical">Critical / High</button>
+          <button class="campaign-filter-btn" type="button" data-log-filter="qr">QR Checks</button>
+          <button class="graph-btn" id="clearTelemetryBtn" type="button" style="color: #f87171;">Clear Log</button>
+        </div>
+      </div>
+
+      <div class="telemetry-table-wrapper">
+        <table class="telemetry-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Vector Type</th>
+              <th>Risk Level</th>
+              <th>Score</th>
+              <th>Threat Classification</th>
+              <th>Cues Found</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="telemetryTableBody">
+            <tr>
+              <td colspan="7" class="telemetry-empty-row">No recorded threats in local storage yet. Inspect a message or QR to populate the audit log.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- AI CYBERSECURITY COPILOT DRAWER (INTERACTIVE) -->
+    <section class="ai-copilot-panel" id="ai-copilot" aria-labelledby="copilot-title">
+      <div class="copilot-card">
+        <div class="copilot-header">
+          <div class="copilot-title">
+            <span style="font-size: 22px;">🤖</span>
+            <div>
+              <h3 id="copilot-title" style="margin: 0; font-size: 16px;">AI Cybersecurity Copilot</h3>
+              <small style="color: var(--text-muted);">Optional local guidance. External Gemini processing is disabled until you consent below.</small>
+            </div>
+          </div>
+          <span class="copilot-badge" id="aiStatusBadge">LOCAL RULES ACTIVE</span>
+        </div>
+
+        <!-- Explicit external processing consent -->
+        <div class="copilot-consent-banner" style="margin: 12px 16px; padding: 12px 14px; background: var(--bg-surface); border: 1px solid var(--line); border-radius: 8px;">
+          <div style="font-size: 12px; line-height: 1.5; color: var(--text-main); margin-bottom: 8px;">
+            <strong style="color: var(--blue-primary);">External processing notice:</strong>
+            With consent, your prompt, brief conversation context, and current scan output—including matched message, URL, or QR snippets; extracted phone/domain/payment identifiers; score; signals; and actions—are sent to ScamSathi’s local service. If configured, these fields may be forwarded to the Google Gemini API. Without consent, no Copilot request is sent and the in-browser guidance fallback is used.
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; color: var(--text-main);">
+              <input type="checkbox" id="aiConsentCheckbox" style="accent-color: var(--blue-primary); width: 15px; height: 15px;">
+              <span>I consent to sending my prompt and scan output (including matched message, URL, or QR snippets and extracted identifiers) to the local ScamSathi service, which may forward these fields to Google Gemini if configured. Consent is saved on this browser until I turn it off.</span>
+            </label>
+            <button type="button" class="graph-btn" id="useLocalRulesBtn" style="padding: 4px 10px; font-size: 11px;">
+              Use Local Rules Only (No External Data)
+            </button>
+          </div>
+        </div>
+
+        <div class="copilot-chat-box" id="copilotChatBox">
+          <div class="chat-bubble assistant">
+            Hello! I am your ScamSathi Cyber Copilot. After running an analysis above, you can ask me how to respond, how to freeze your UPI ID, or how to verify bank alerts safely.
+          </div>
+        </div>
+
+        <div class="copilot-input-row">
+          <input type="text" id="copilotInput" placeholder="Ask a cybersecurity question (e.g., What should I do if I shared an OTP?)" autocomplete="off">
+          <button class="copilot-send-btn" id="copilotSendBtn" type="button">Ask Copilot</button>
+        </div>
+        <p class="micro">Do not enter passwords, OTPs, PINs or full card details.</p>
+      </div>
+    </section>
+
+    <!-- QR SCANNER SECTION (PRESERVED) -->
     <section class="qr-section" id="qr" aria-labelledby="qr-title">
       <div class="section-intro">
-        <div><div class="kicker" data-i18n="qr-kicker">QR AND PAYMENT SAFETY</div><h2 id="qr-title" data-i18n="qr-title">Check before you scan or pay</h2><p data-i18n="qr-help">Scan with your camera, choose a QR image, or paste decoded content. ScamSathi will not open a destination or start a payment.</p></div>
-        <span class="step">02 <i>/</i> 03</span>
+        <div>
+          <div class="kicker" data-i18n="qr-kicker">QR AND PAYMENT SAFETY</div>
+          <h2 id="qr-title" data-i18n="qr-title">Check before you scan or pay</h2>
+          <p data-i18n="qr-help">Scan with your camera, choose a QR image, or paste decoded content. ScamSathi will not open a destination or start a payment.</p>
+        </div>
+        <span class="step">02 <i>/</i> 08</span>
       </div>
-      <div class="qr-actions"><a class="analyze" href="qr-scanner.html" data-i18n="open-scanner">Open QR scanner <span aria-hidden="true">→</span></a><span class="micro" data-i18n="camera-note">Camera access starts only after you press Start scanning. HTTPS or localhost is required.</span></div>
+
+      <div class="qr-actions">
+        <a class="analyze" href="qr-scanner.html" data-i18n="open-scanner">Open Live QR Scanner <span aria-hidden="true">→</span></a>
+        <span class="micro" data-i18n="camera-note">Camera access starts only after you press Start scanning. HTTPS or localhost is required.</span>
+      </div>
+
       <div class="qr-paste input-panel">
-        <label for="qrPayload"><span data-i18n="qr-paste-label">PASTE DECODED QR CONTENT</span><span data-i18n="qr-paste-note">up to 4,096 characters</span></label>
+        <label for="qrPayload">
+          <span data-i18n="qr-paste-label">PASTE DECODED QR CONTENT</span>
+          <span data-i18n="qr-paste-note">up to 4,096 characters</span>
+        </label>
         <textarea id="qrPayload" maxlength="4096" placeholder="upi://pay?pa=merchant@example&amp;pn=Merchant&amp;am=10&amp;cu=INR" data-i18n-placeholder="qr-placeholder"></textarea>
-        <div class="input-actions"><button class="analyze" id="qrAnalyzeBtn" type="button"><span data-i18n="inspect-qr">Inspect QR content</span><span aria-hidden="true">→</span></button><span class="micro" data-i18n="upi-unverified">UPI details in a QR are unverified. Confirm the payee and amount in your UPI app.</span></div>
+
+        <div class="input-actions">
+          <button class="analyze" id="qrAnalyzeBtn" type="button">
+            <span data-i18n="inspect-qr">Inspect QR content</span>
+            <span aria-hidden="true">→</span>
+          </button>
+          <span class="micro" data-i18n="upi-unverified">UPI details in a QR are unverified. Confirm the payee and amount in your UPI app.</span>
+        </div>
         <div class="error" id="qrError" role="alert" hidden></div>
       </div>
+
       <article class="result" id="qrResult" data-result hidden aria-live="polite">
-        <div class="result-head"><div><div class="kicker" data-i18n="qr-result-kicker">QR CHECK RESULTS</div><h2 data-result-title></h2><p data-result-summary></p></div><div class="score-badge" data-score-badge><strong data-result-score>0</strong><small data-i18n="score-label">SIGNAL SCORE</small></div></div>
+        <div class="result-head">
+          <div>
+            <div class="kicker" data-i18n="qr-result-kicker">QR CHECK RESULTS</div>
+            <h2 data-result-title></h2>
+            <p data-result-summary></p>
+            <span class="verdict-tag" data-analysis-source style="background: var(--blue-soft); color: var(--blue-primary); border: 1px solid var(--line-bright);">DETERMINISTIC RULES</span>
+          </div>
+          <div class="score-badge" data-score-badge>
+            <strong data-result-score>0</strong>
+            <small data-i18n="score-label">SIGNAL SCORE</small>
+          </div>
+        </div>
         <div class="score-note" data-i18n="score-note">Rule points · not a probability of fraud</div>
-        <div class="result-columns"><div><h3 data-i18n="signals-title">Why it was flagged</h3><div data-result-signals class="signals"></div></div><div><h3 data-i18n="actions-title">Safer next steps</h3><ol data-result-actions class="actions"></ol></div></div>
-        <div class="result-bottom"><span data-result-disclaimer></span><button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button></div>
+        <section class="evidence-explainer" data-evidence-panel aria-labelledby="qrEvidenceTitle">
+          <div class="evidence-heading">
+            <div>
+              <span class="chain-kicker">OBSERVED QR CONTENT · RULE INTERPRETATION</span>
+              <h3 id="qrEvidenceTitle">Evidence and explanation</h3>
+              <p>Extracted QR values are unverified. A payment address alone does not indicate maliciousness.</p>
+            </div>
+            <span class="confidence-note" data-confidence-summary>Confidence is not a probability.</span>
+          </div>
+          <label class="sr-only" for="qrEvidenceSearch">Search QR evidence</label>
+          <input class="evidence-search" id="qrEvidenceSearch" data-evidence-search type="search" placeholder="Search QR evidence…" autocomplete="off">
+          <div class="evidence-source-preview" data-evidence-preview aria-live="polite"></div>
+          <div class="evidence-items" data-evidence-items></div>
+        </section>
+        <div class="result-columns">
+          <div>
+            <h3 data-i18n="signals-title">Why it was flagged</h3>
+            <div data-result-signals class="signals"></div>
+          </div>
+          <div>
+            <h3 data-i18n="actions-title">Safer next steps</h3>
+            <ol data-result-actions class="actions"></ol>
+          </div>
+        </div>
+        <div class="result-bottom">
+          <span data-result-disclaimer></span>
+          <button class="copy" type="button" data-copy-result data-i18n="copy-result">Copy safety summary</button>
+        </div>
       </article>
     </section>
 
+    <!-- LEARN & TACTICS SECTION (PRESERVED) -->
     <section class="learn" id="learn" aria-labelledby="learn-title">
-      <div class="learn-head"><div><div class="kicker" data-i18n="learn-kicker">A MOMENT TO VERIFY</div><h2 id="learn-title" data-i18n="learn-title">Spot the pressure tactic</h2><p data-i18n="learn-copy">Synthetic examples show the warning patterns ScamSathi can explain.</p></div><div class="learn-arrows"><button id="prevCase" type="button" aria-label="Previous example">←</button><button id="nextCase" type="button" aria-label="Next example">→</button></div></div>
-      <article class="case-card"><div class="case-number"><span id="caseNum">01</span><small>/ 03</small></div><div class="case-content"><div class="case-tag" id="caseTag">FAKE KYC ALERT</div><blockquote id="caseQuote"></blockquote><div class="case-explain"><b data-i18n="what-notice">What to notice</b><p id="caseExplain"></p></div></div><div class="case-mark" aria-hidden="true">!</div></article>
+      <div class="learn-head">
+        <div>
+          <div class="kicker" data-i18n="learn-kicker">CASE EXAMPLES</div>
+          <h2 id="learn-title" data-i18n="learn-title">Spot the Pressure Tactic</h2>
+          <p data-i18n="learn-copy">Synthetic examples demonstrate the warning patterns ScamSathi explains.</p>
+        </div>
+        <div class="learn-arrows">
+          <button id="prevCase" type="button" aria-label="Previous example">←</button>
+          <button id="nextCase" type="button" aria-label="Next example">→</button>
+        </div>
+      </div>
+      <article class="case-card">
+        <div class="case-number"><span id="caseNum">01</span><small>/ 03</small></div>
+        <div class="case-content">
+          <div class="case-tag" id="caseTag">FAKE KYC ALERT</div>
+          <blockquote id="caseQuote"></blockquote>
+          <div class="case-explain">
+            <b data-i18n="what-notice">What to notice</b>
+            <p id="caseExplain"></p>
+          </div>
+        </div>
+        <div class="case-mark" aria-hidden="true">!</div>
+      </article>
     </section>
 
+    <!-- VOICE DEEPFAKE DISCLAIMER (PRESERVED) -->
     <section class="audio-note" id="audio" aria-labelledby="audio-title">
-      <div class="audio-icon" aria-hidden="true">◌</div><div><div class="kicker" data-i18n="audio-kicker">VOICE SCAM SAFETY</div><h2 id="audio-title" data-i18n="audio-title">Audio deepfake analysis is not available</h2><p data-i18n="audio-copy">ScamSathi does not upload or analyze recordings and cannot confirm whether a voice is cloned. If a caller urgently asks for money, hang up and call the person using a number you already trust.</p></div>
+      <div class="audio-icon" aria-hidden="true">◌</div>
+      <div>
+        <div class="kicker" data-i18n="audio-kicker">VOICE SCAM SAFETY</div>
+        <h2 id="audio-title" data-i18n="audio-title">Audio deepfake analysis is not available</h2>
+        <p data-i18n="audio-copy">ScamSathi does not upload or analyze recordings and cannot confirm whether a voice is cloned. If a caller urgently asks for money, hang up and call the person using a number you already trust.</p>
+      </div>
     </section>
 
+    <!-- EMERGENCY CYBERCRIME HELPLINE (PRESERVED) -->
     <section class="help" aria-labelledby="help-title">
-      <div class="help-icon" aria-hidden="true">↗</div><div><div class="kicker" data-i18n="help-kicker">IF MONEY HAS ALREADY LEFT YOUR ACCOUNT</div><h2 id="help-title" data-i18n="help-title">Act quickly. Contact your bank and report it.</h2><p><span data-i18n="help-copy">In India, call</span> <a href="tel:1930">1930</a> <span data-i18n="help-copy-2">or use the Government of India’s</span> <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="portal-name">National Cyber Crime Reporting Portal</a>.</p></div><a class="help-button" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="open-portal">Open official portal ↗</a>
+      <div class="help-icon" aria-hidden="true">↗</div>
+      <div>
+        <div class="kicker" data-i18n="help-kicker">IF MONEY HAS ALREADY LEFT YOUR ACCOUNT</div>
+        <h2 id="help-title" data-i18n="help-title">Act quickly. Contact your bank and report it.</h2>
+        <p><span data-i18n="help-copy">In India, call</span> <a href="tel:1930" style="color:#f87171; font-weight:800; font-size:16px;">1930</a> <span data-i18n="help-copy-2">or use the Government of India’s</span> <a href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="portal-name">National Cyber Crime Reporting Portal</a>.</p>
+      </div>
+      <a class="help-button" href="https://cybercrime.gov.in/" target="_blank" rel="noopener noreferrer" data-i18n="open-portal">Open official portal ↗</a>
     </section>
 
+    <!-- SCOPE & LIMITS (PRESERVED) -->
     <section class="limits" aria-labelledby="limits-title">
       <strong id="limits-title" data-i18n="limits-title">What this tool can and cannot tell you</strong>
-      <p data-i18n="limits-copy">ScamSathi uses rules to flag patterns in message text, URL structure and decoded QR content. It does not use a trained fraud model, threat-intelligence feed or bank lookup. The score is not a probability or confirmed verdict; a low score does not prove safety. It does not listen to calls, open links, block payments or submit reports. Message content is not retained.</p>
+      <p data-i18n="limits-copy">ScamSathi uses deterministic rules to explain patterns in message text, URL structure and decoded QR content. It does not use a black-box fraud score or proprietary bank lookup. The score indicates warning sign density, not confirmed fraud guilt; a low score does not guarantee safety. Message content is not retained or logged.</p>
     </section>
   </main>
 
-  <footer><a class="brand" href="#top"><span class="logo" aria-hidden="true">S</span><span>ScamSathi<small>VIBEX CODES 26 · TRACK 3</small></span></a><span data-i18n="footer-tag">Built to help people pause before they pay.</span><a href="https://github.com/ada203880-boop/scamsathi-vibex26/tree/feature/scamsathi-vibex-final" target="_blank" rel="noopener noreferrer" data-i18n="source-link">Source code ↗</a><span data-i18n="footer-tech">Prototype · explainable rules</span></footer>
+  <!-- Footer -->
+  <footer>
+    <a class="brand" href="#top">
+      <span class="logo" aria-hidden="true">S</span>
+      <span>ScamSathi<small>VIBEX CODES 26 · TRACK 3</small></span>
+    </a>
+    <span data-i18n="footer-tag">Defending users before credentials or funds leave their possession.</span>
+    <a href="https://github.com/ada203880-boop/scamsathi-vibex26" target="_blank" rel="noopener noreferrer" data-i18n="source-link">Source code ↗</a>
+    <span data-i18n="footer-tech">ScamSathi 2.0 · Local-First Cyber Intelligence</span>
+  </footer>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
